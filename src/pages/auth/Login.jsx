@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../App.css";
+import { login } from "../../services/authService";
 
 function Login() {
     const navigate = useNavigate();
@@ -10,6 +11,8 @@ function Login() {
         password: ""
     });
 
+    const [error, setError] = useState("");
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -17,18 +20,51 @@ function Login() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
 
-        console.log("Login:", formData);
+        try {
+            const data = await login(formData);
 
-        navigate("/dashboard");
+            // Save JWT token
+            localStorage.setItem("token", data.token);
+
+            // Save user information
+            const user = {
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                city: data.city,
+                photo: data.photo,
+                role: data.role
+            };
+
+            localStorage.setItem("user", JSON.stringify(user));
+
+            console.log("Login successful:", data);
+
+            // Go to dashboard
+            navigate("/dashboard");
+
+        } catch (error) {
+            console.error("Login error:", error);
+
+            if (error.response) {
+                setError(
+                    error.response.data?.message ||
+                    "Email or password is incorrect"
+                );
+            } else {
+                setError("Unable to connect to the server");
+            }
+        }
     };
 
     return (
         <div className="login-page">
 
-            {/* LEFT SIDE */}
             <div className="login-left">
 
                 <div className="login-logo">
@@ -54,8 +90,6 @@ function Login() {
 
             </div>
 
-
-            {/* RIGHT SIDE */}
             <div className="login-right">
 
                 <div className="login-form-container">
@@ -67,7 +101,6 @@ function Login() {
                             Sign in to your SkillSwap account.
                         </p>
                     </div>
-
 
                     <form
                         className="login-form"
@@ -87,7 +120,6 @@ function Login() {
                             />
                         </div>
 
-
                         <div className="form-group">
                             <label>Password</label>
 
@@ -101,6 +133,11 @@ function Login() {
                             />
                         </div>
 
+                        {error && (
+                            <p className="login-error">
+                                {error}
+                            </p>
+                        )}
 
                         <div className="login-actions">
 
@@ -121,7 +158,6 @@ function Login() {
                         </div>
 
                     </form>
-
 
                     <p className="login-register">
                         Don't have an account?{" "}

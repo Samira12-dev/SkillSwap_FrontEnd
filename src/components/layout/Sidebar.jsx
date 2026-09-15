@@ -1,5 +1,8 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
+import {  MdDashboard,  MdPeople,  MdEmojiEvents,  MdSwapHoriz, MdEvent,  MdNotifications,   MdSettings,MdPerson, MdSearch,  MdMessage,  MdLogout} from "react-icons/md";
+import { TbArrowsExchange } from "react-icons/tb";
 import "../../App.css";
 
 function Sidebar() {
@@ -7,18 +10,25 @@ function Sidebar() {
 
     return (
         <aside className="sidebar">
+
             <div className="sidebar-header">
                 <div className="logo">
-                    <span className="logo-icon">↔</span>
-                    <span className="logo-text">SkillSwap</span>
+                    <span className="logo-icon">
+                        <TbArrowsExchange />
+                    </span>
+
+                    <span className="logo-text">
+                        SkillSwap
+                    </span>
                 </div>
             </div>
 
             <nav className="sidebar-menu">
                 <ul>
+
                     <li className="active">
                         <Link to="/dashboard">
-                            <span>▦</span>
+                            <MdDashboard />
                             <span>Dashboard</span>
                         </Link>
                     </li>
@@ -27,35 +37,35 @@ function Sidebar() {
                         <>
                             <li>
                                 <Link to="/users">
-                                    <span>👤</span>
+                                    <MdPeople />
                                     <span>Users</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/skills">
-                                    <span>🏆</span>
+                                    <MdEmojiEvents />
                                     <span>Skills</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/swap-requests">
-                                    <span>↔</span>
+                                    <MdSwapHoriz />
                                     <span>Swap Requests</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/sessions">
-                                    <span>▣</span>
+                                    <MdEvent />
                                     <span>Sessions</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/notifications">
-                                    <span>🔔</span>
+                                    <MdNotifications />
                                     <span>Notifications</span>
                                     <span className="badge">3</span>
                                 </Link>
@@ -63,7 +73,7 @@ function Sidebar() {
 
                             <li>
                                 <Link to="/settings">
-                                    <span>⚙</span>
+                                    <MdSettings />
                                     <span>Settings</span>
                                 </Link>
                             </li>
@@ -72,42 +82,42 @@ function Sidebar() {
                         <>
                             <li>
                                 <Link to="/profile">
-                                    <span>👤</span>
+                                    <MdPerson />
                                     <span>My Profile</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/skills">
-                                    <span>🏆</span>
+                                    <MdEmojiEvents />
                                     <span>My Skills</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/discover">
-                                    <span>⌕</span>
+                                    <MdSearch />
                                     <span>Discover Skills</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/swap-requests">
-                                    <span>↔</span>
+                                    <MdSwapHoriz />
                                     <span>Swap Requests</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/sessions">
-                                    <span>▣</span>
+                                    <MdEvent />
                                     <span>Sessions</span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link to="/messages">
-                                    <span>💬</span>
+                                    <MdMessage />
                                     <span>Messages</span>
                                     <span className="badge">2</span>
                                 </Link>
@@ -115,25 +125,22 @@ function Sidebar() {
 
                             <li>
                                 <Link to="/notifications">
-                                    <span>🔔</span>
+                                    <MdNotifications />
                                     <span>Notifications</span>
                                     <span className="badge">3</span>
                                 </Link>
                             </li>
 
-                            <li>
-                                <Link to="/settings">
-                                    <span>⚙</span>
-                                    <span>Settings</span>
-                                </Link>
-                            </li>
                         </>
                     )}
+
                 </ul>
             </nav>
 
             <div className="sidebar-footer">
+
                 <div className="user-info">
+
                     <img
                         src="https://i.pravatar.cc/100?img=12"
                         alt="User Avatar"
@@ -141,20 +148,27 @@ function Sidebar() {
                     />
 
                     <div className="user-details">
-                        <span className="user-name">Alex Johnson</span>
+                        <span className="user-name">
+                            Alex Johnson
+                        </span>
+
                         <span className="user-email">
-                            alex@skillswap.com
+                            Samira@skillswap.com
                         </span>
                     </div>
+
                 </div>
 
                 <Link to="/logout" className="logout-btn">
-                    <span>↪</span>
+                    <MdLogout />
                     <span>Logout</span>
                 </Link>
+
             </div>
+
         </aside>
     );
 }
 
 export default Sidebar;
+

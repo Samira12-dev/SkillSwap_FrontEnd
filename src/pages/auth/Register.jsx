@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../App.css";
+import {register}from "../../services/authService"
 
 function Register() {
     const navigate = useNavigate();
@@ -11,7 +12,6 @@ function Register() {
         lastName: "",
         email: "",
         password: "",
-        confirmPassword: "",
         city: "",
         bio: "",
         category: "",
@@ -26,21 +26,21 @@ function Register() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match");
-            return;
-        }
-
-        if (formData.password.length < 8) {
-            alert("Password must contain at least 8 characters");
-            return;
-        }
-
-        console.log("Register:", formData);
-
+        await register(formData);
+        setFormData({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+            city: formData.city,
+            bio: formData.bio,
+            category: formData.category,
+            offerSkill: formData.offerSkill,
+            learnSkill: formData.learnSkill
+        });
         navigate("/login");
     };
 
@@ -161,20 +161,6 @@ function Register() {
                                 />
                             </div>
 
-                            <div className="form-group">
-                                <label>
-                                    Confirm password <span className="required">*</span>
-                                </label>
-
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    placeholder="Repeat password"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
 
                         </div>
 
