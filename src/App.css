@@ -1946,9 +1946,10 @@ body {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
+
 
 .left-section,
 .right-section {
@@ -1963,6 +1964,7 @@ body {
     border-radius: 14px;
     background: var(--bg-white);
     box-shadow: 0 8px 25px var(--shadow-card);
+    margin-bottom: 20px;
 }
 
 .dashboard-card-box h3 {
@@ -1991,11 +1993,10 @@ body {
 
 .actions-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     margin-top: 18px;
 }
-
 .action-btn {
     display: flex;
     align-items: center;
