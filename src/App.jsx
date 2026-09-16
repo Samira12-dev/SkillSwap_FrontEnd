@@ -20,6 +20,7 @@ import Sessions from "./pages/Sessions";
 import SessionDetails from "./components/sessions/SessionDetails";
 import Messages from "./pages/Messages";
 import Notifications from "./pages/Notifications";
+import AddSkill from "./components/skills/AddSkill";
 
 function App() {
     return (
@@ -46,12 +47,10 @@ function App() {
                         <Route path="/discover" element={<DiscoverSkills />} />
                         <Route path="/swap-requests" element={<SwapRequests />} />
                         <Route path="/sessions" element={<Sessions />} />
-                        <Route
-                            path="/sessions/:sessionId"
-                            element={<SessionDetails />}
-                        />
+                        <Route path="/sessions/:sessionId" element={<SessionDetails />}  />
                         <Route path="/messages" element={<Messages />} />
                         <Route path="/notifications" element={<Notifications />} />
+                        <Route path="/skills/add" element={<AddSkill />} />
                     </Route>
 
                 </Route>

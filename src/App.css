@@ -6003,3 +6003,151 @@ body {
         font-size: 0;
     }
 }
+
+/* =========================
+   ADD SKILL PAGE
+========================= */
+
+.add-skill-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.add-skill-header {
+    margin-bottom: 25px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #6b5dd3;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.back-link svg {
+    font-size: 20px;
+}
+
+.add-skill-header h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    color: #222;
+}
+
+.add-skill-header p {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* =========================
+   ADD SKILL CARD
+========================= */
+
+.add-skill-card {
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.add-skill-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+}
+
+.form-group select:focus {
+    border-color: #6b5dd3;
+}
+
+
+/* =========================
+   SUBMIT BUTTON
+========================= */
+
+.add-skill-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    width: 100%;
+    padding: 13px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #6b5dd3;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.add-skill-submit:hover {
+    background: #594bc2;
+}
+
+
+/* =========================
+   MY SKILLS ADD BUTTON
+========================= */
+
+.add-skill-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 11px 18px;
+
+    background: #6b5dd3;
+    color: white;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.add-skill-btn:hover {
+    background: #594bc2;
+}
+
+.add-skill-btn svg {
+    font-size: 20px;
+}

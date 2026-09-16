@@ -1,45 +1,33 @@
-
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+    MdStar,
+    MdMoreVert,
+    MdLightbulb,
+    MdAdd
+} from "react-icons/md";
+import { getUser } from "../services/authService";
+import { getUserSkills } from "../services/skillService";
 import "../App.css";
 
 function MySkills() {
-    const skills = [
-        {
-            id: 1,
-            name: "React Development",
-            category: "Technology",
-            type: "OFFER",
-            level: "Advanced"
-        },
-        {
-            id: 2,
-            name: "Node.js & APIs",
-            category: "Technology",
-            type: "OFFER",
-            level: "Advanced"
-        },
-        {
-            id: 3,
-            name: "TypeScript",
-            category: "Technology",
-            type: "OFFER",
-            level: "Intermediate"
-        },
-        {
-            id: 4,
-            name: "Photography",
-            category: "Design",
-            type: "WANTED",
-            level: ""
-        },
-        {
-            id: 5,
-            name: "Spanish",
-            category: "Language",
-            type: "WANTED",
-            level: ""
+    const [skills, setSkills] = useState([]);
+
+    useEffect(() => {
+        const user = getUser();
+
+        if (!user) {
+            return;
         }
-    ];
+
+        getUserSkills(user.id)
+            .then((data) => {
+                setSkills(data.content || []);
+            })
+            .catch((error) => {
+                console.error("Error loading skills:", error);
+            });
+    }, []);
 
     const offeredSkills = skills.filter(
         (skill) => skill.type === "OFFER"
@@ -51,7 +39,6 @@ function MySkills() {
 
     return (
         <div className="my-skills-page">
-
             <div className="my-skills-header">
                 <div>
                     <h2>My Skills</h2>
@@ -61,23 +48,18 @@ function MySkills() {
                     </p>
                 </div>
 
-                <Link
-                    to="/skills/add"
-                    className="add-skill-btn"
-                >
-                    + Add Skill
+                <Link to="/skills/add" className="add-skill-btn">
+                    <MdAdd />
+                    Add Skill
                 </Link>
             </div>
 
             <div className="skills-summary">
-
                 <div className="skills-summary-card">
                     <span className="skills-summary-label">
                         TOTAL SKILLS
                     </span>
-
                     <strong>{skills.length}</strong>
-
                     <span className="skills-summary-text">
                         Your current skills
                     </span>
@@ -87,9 +69,7 @@ function MySkills() {
                     <span className="skills-summary-label">
                         OFFERING
                     </span>
-
                     <strong>{offeredSkills.length}</strong>
-
                     <span className="skills-summary-text">
                         Skills you can teach
                     </span>
@@ -99,26 +79,20 @@ function MySkills() {
                     <span className="skills-summary-label">
                         WANTED
                     </span>
-
                     <strong>{wantedSkills.length}</strong>
-
                     <span className="skills-summary-text">
                         Skills you want to learn
                     </span>
                 </div>
-
             </div>
 
             <div className="skills-grid">
-
                 <div className="skills-card">
-
                     <div className="skills-card-header">
                         <div>
                             <span className="skills-type-label offer-label">
                                 I CAN OFFER
                             </span>
-
                             <h3>Skills I can teach</h3>
                         </div>
 
@@ -128,18 +102,17 @@ function MySkills() {
                     </div>
 
                     <div className="skill-list">
-
                         {offeredSkills.map((skill) => (
                             <div
                                 className="skill-detail-item"
                                 key={skill.id}
                             >
                                 <div className="skill-detail-icon purple">
-                                    ★
+                                    <MdStar />
                                 </div>
 
                                 <div className="skill-detail-info">
-                                    <h4>{skill.name}</h4>
+                                    <h4>{skill.skillName}</h4>
                                     <span>{skill.category}</span>
                                 </div>
 
@@ -149,24 +122,20 @@ function MySkills() {
                                     </span>
 
                                     <button className="skill-more-btn">
-                                        ⋮
+                                        <MdMoreVert />
                                     </button>
                                 </div>
                             </div>
                         ))}
-
                     </div>
-
                 </div>
 
                 <div className="skills-card">
-
                     <div className="skills-card-header">
                         <div>
                             <span className="skills-type-label wanted-label">
                                 I WANT TO LEARN
                             </span>
-
                             <h3>Skills I want to learn</h3>
                         </div>
 
@@ -176,18 +145,17 @@ function MySkills() {
                     </div>
 
                     <div className="skill-list">
-
                         {wantedSkills.map((skill) => (
                             <div
                                 className="skill-detail-item"
                                 key={skill.id}
                             >
                                 <div className="skill-detail-icon yellow">
-                                    ★
+                                    <MdStar />
                                 </div>
 
                                 <div className="skill-detail-info">
-                                    <h4>{skill.name}</h4>
+                                    <h4>{skill.skillName}</h4>
                                     <span>{skill.category}</span>
                                 </div>
 
@@ -197,39 +165,31 @@ function MySkills() {
                                     </span>
 
                                     <button className="skill-more-btn">
-                                        ⋮
+                                        <MdMoreVert />
                                     </button>
                                 </div>
                             </div>
                         ))}
-
                     </div>
-
                 </div>
-
             </div>
 
             <div className="skills-info-card">
-
                 <div className="skills-info-icon">
-                    💡
+                    <MdLightbulb />
                 </div>
 
                 <div>
                     <h3>Grow your SkillSwap profile</h3>
-
                     <p>
                         Add more skills you can offer and skills you want to
                         learn to increase your chances of finding the perfect
                         skill exchange.
                     </p>
                 </div>
-
             </div>
-
         </div>
     );
 }
 
 export default MySkills;
-

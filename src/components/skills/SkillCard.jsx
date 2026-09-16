@@ -4,103 +4,44 @@ import "../../App.css";
 function SkillCard({ skill, onRequestSwap }) {
     return (
         <div className="discover-card">
-
             <div className="user-card-header">
-
                 <div className="user-main-info">
-
-                    <img
-                        src={skill.avatar}
-                        alt={skill.user}
-                        className="avatar-large"
-                    />
+                    <div className="avatar-large">
+                        {skill.userName?.charAt(0)}
+                    </div>
 
                     <div>
-                        <h3>{skill.user}</h3>
+                        <h3>{skill.userName}</h3>
 
                         <p className="location">
-                            📍 {skill.city}
+                            {skill.city}
                         </p>
-
-                        <div className="rating-stars">
-                            <span className="stars">
-                                ★★★★★
-                            </span>
-
-                            <span className="rating-val">
-                                {skill.rating}
-                            </span>
-
-                            <span className="rating-count">
-                                ({skill.reviews})
-                            </span>
-                        </div>
                     </div>
-
                 </div>
-
-                <div className="sessions-badge">
-                    <span className="count">
-                        {skill.sessions}
-                    </span>
-
-                    <span className="label">
-                        sessions
-                    </span>
-                </div>
-
-            </div>
-
-            <p className="bio-snippet">
-                {skill.bio}
-            </p>
-
-            <div className="skills-section">
-
-                <span className="section-label">
-                    OFFERING
-                </span>
-
-                {skill.offering.map((item, index) => (
-                    <div className="skill-item" key={index}>
-                        <span className="skill-name">
-                            {item.name}
-                        </span>
-
-                        <span className="tag-pill green">
-                            {item.level}
-                        </span>
-                    </div>
-                ))}
-
             </div>
 
             <div className="skills-section">
-
                 <span className="section-label">
-                    WANTS TO LEARN
+                    {skill.type === "OFFER" ? "OFFERING" : "WANTS TO LEARN"}
                 </span>
 
-                <div className="tags-row">
-                    {skill.wanted.map((item, index) => (
-                        <span
-                            className="tag-pill blue"
-                            key={index}
-                        >
-                            {item}
-                        </span>
-                    ))}
-                </div>
+                <div className="skill-item">
+                    <span className="skill-name">
+                        {skill.name}
+                    </span>
 
+                    <span className="tag-pill green">
+                        {skill.level}
+                    </span>
+                </div>
             </div>
 
             <div className="discover-card-actions">
-
                 <Link
-                    to={`/skills/${skill.id}`}
+                    to={`/skills/${skill.userId}`}
                     className="link-btn"
                 >
-                    View Profile
+                    View Skill
                 </Link>
 
                 <button
@@ -109,9 +50,7 @@ function SkillCard({ skill, onRequestSwap }) {
                 >
                     Request Swap
                 </button>
-
             </div>
-
         </div>
     );
 }

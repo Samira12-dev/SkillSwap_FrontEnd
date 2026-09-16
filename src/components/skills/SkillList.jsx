@@ -5,7 +5,7 @@ function SkillList({ skills, onRequestSwap }) {
     if (!skills || skills.length === 0) {
         return (
             <div className="skill-list-empty">
-                <p>📭 No skills found.</p>
+                <p>No skills found.</p>
             </div>
         );
     }
@@ -14,7 +14,7 @@ function SkillList({ skills, onRequestSwap }) {
         <div className="discover-grid">
             {skills.map((skill) => (
                 <SkillCard
-                    key={skill.id}
+                    key={`${skill.userId}-${skill.name}-${skill.type}`}
                     skill={skill}
                     onRequestSwap={onRequestSwap}
                 />
