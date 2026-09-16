@@ -1,3 +1,4 @@
+
 import SkillCard from "./SkillCard";
 import "../../App.css";
 
@@ -12,9 +13,9 @@ function SkillList({ skills, onRequestSwap }) {
 
     return (
         <div className="discover-grid">
-            {skills.map((skill) => (
+            {skills.map((skill, index) => (
                 <SkillCard
-                    key={`${skill.userId}-${skill.name}-${skill.type}`}
+                    key={`${skill.userId}-${skill.skillName}-${skill.type}-${index}`}
                     skill={skill}
                     onRequestSwap={onRequestSwap}
                 />

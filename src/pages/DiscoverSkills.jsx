@@ -61,7 +61,9 @@ function DiscoverSkills() {
             matchesType
         );
     });
-
+console.log("Selected level:", level);
+console.log("All skills:", skills);
+console.log("Filtered skills:", filteredSkills);
     return (
         <div className="discover-page">
             <div className="discover-header">
