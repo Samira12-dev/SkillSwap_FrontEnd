@@ -9,45 +9,21 @@ function DiscoverSkills() {
     const [category, setCategory] = useState("");
     const [level, setLevel] = useState("");
     const [type, setType] = useState("");
-    const [sort, setSort] = useState("");
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
 
     useEffect(() => {
-        getDiscoverSkills()
+        getDiscoverSkills(currentPage, 12)
             .then((data) => {
-                const result = [];
-
-                data.forEach((user) => {
-                    user.offering.forEach((skill) => {
-                        result.push({
-                            ...skill,
-                            userId: user.id,
-                            userName: user.user,
-                            city: user.city,
-                            avatar: user.avatar,
-                            rating: user.rating,
-                            type: "OFFER"
-                        });
-                    });
-
-                    user.wanted.forEach((skill) => {
-                        result.push({
-                            ...skill,
-                            userId: user.id,
-                            userName: user.user,
-                            city: user.city,
-                            avatar: user.avatar,
-                            rating: user.rating,
-                            type: "WANTED"
-                        });
-                    });
-                });
-
-                setSkills(result);
+                setSkills(data.content);
+                setTotalPages(data.totalPages);
             })
             .catch((error) => {
-                console.error( error);
+                console.error("DISCOVER ERROR:", error);
             });
-    }, []);
+    }, [currentPage]);
+
 
     const categories = [
         ...new Set(skills.map((skill) => skill.category))
@@ -61,32 +37,30 @@ function DiscoverSkills() {
         ...new Set(skills.map((skill) => skill.type))
     ];
 
-    const filteredSkills = skills
-        .filter((skill) => {
-            const searchValue = search.toLowerCase();
+    const filteredSkills = skills.filter((skill) => {
+        const searchValue = search.toLowerCase();
 
-            const matchesSearch =
-                skill.name?.toLowerCase().includes(searchValue) ||
-                skill.userName?.toLowerCase().includes(searchValue) ||
-                skill.category?.toLowerCase().includes(searchValue);
+        const matchesSearch =
+            skill.skillName?.toLowerCase().includes(searchValue) ||
+            skill.userName?.toLowerCase().includes(searchValue) ||
+            skill.category?.toLowerCase().includes(searchValue);
 
-            const matchesCategory =
-                !category || skill.category === category;
+        const matchesCategory =
+            !category || skill.category === category;
 
-            const matchesLevel =
-                !level || skill.level === level;
+        const matchesLevel =
+            !level || skill.level === level;
 
-            const matchesType =
-                !type || skill.type === type;
+        const matchesType =
+            !type || skill.type === type;
 
-            return (
-                matchesSearch &&
-                matchesCategory &&
-                matchesLevel &&
-                matchesType
-            );
-        })
-       
+        return (
+            matchesSearch &&
+            matchesCategory &&
+            matchesLevel &&
+            matchesType
+        );
+    });
 
     return (
         <div className="discover-page">
@@ -148,15 +122,32 @@ function DiscoverSkills() {
                             </option>
                         ))}
                     </select>
-
-                   
                 </div>
             </div>
 
             <SkillList
                 skills={filteredSkills}
-                onRequestSwap={() => {}}
+                onRequestSwap={() => { }}
             />
+            <div className="pagination">
+                <button
+                    disabled={currentPage === 0}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                >
+                    Previous
+                </button>
+
+                <span>
+                    Page {currentPage + 1} of {totalPages}
+                </span>
+
+                <button
+                    disabled={currentPage === totalPages - 1}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 }

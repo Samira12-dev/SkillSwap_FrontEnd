@@ -14,7 +14,7 @@ function SkillCard({ skill, onRequestSwap }) {
                         <h3>{skill.userName}</h3>
 
                         <p className="location">
-                            {skill.city}
+                            {skill.category}
                         </p>
                     </div>
                 </div>
@@ -27,7 +27,7 @@ function SkillCard({ skill, onRequestSwap }) {
 
                 <div className="skill-item">
                     <span className="skill-name">
-                        {skill.name}
+                        {skill.skillName}
                     </span>
 
                     <span className="tag-pill green">

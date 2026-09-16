@@ -4167,6 +4167,96 @@ body {
 }
 
 
+/*================= Pagination ================= */
+.discover-search .search-icon {
+    position: absolute;
+    left: 13px;
+    width: 17px;
+    height: 17px;
+    color: var(--text-light);
+}
+
+.discover-select {
+    position: relative;
+}
+
+.discover-select select {
+    padding-right: 34px;
+}
+
+.discover-select svg {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.avatar-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-purple-light);
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.discover-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 28px;
+    padding: 8px 0 20px;
+}
+
+.discover-pagination button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-white);
+    color: var(--text-secondary);
+    font-family: var(--font-main);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.discover-pagination button svg {
+    width: 15px;
+    height: 15px;
+}
+
+.discover-pagination button:hover:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.discover-pagination button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.discover-pagination span {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.discover-pagination strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+
 /* ================= Swap Requests ================= */
 
 

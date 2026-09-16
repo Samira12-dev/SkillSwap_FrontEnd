@@ -20,8 +20,10 @@ export const addSkillToUser = async (userId, data) => {
     return response.data;
 };
 
-export const getDiscoverSkills = async () => {
-    const response = await api.get("/skills/discover");
+export const getDiscoverSkills = async (page = 0, size = 12) => {
+    const response = await api.get(
+        `/skills/discover?page=${page}&size=${size}`
+    );
+
     return response.data;
 };
-
