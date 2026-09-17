@@ -26,19 +26,6 @@ function Login() {
             const data = await login(formData);
 
             localStorage.setItem("token", data.token);
-
-            const user = {
-                id: data.id,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                city: data.city,
-                photo: data.photo,
-                role: data.role
-            };
-
-            localStorage.setItem("user", JSON.stringify(user));
-
             navigate("/dashboard");
         } catch (error) {
             console.error("Login error:", error);

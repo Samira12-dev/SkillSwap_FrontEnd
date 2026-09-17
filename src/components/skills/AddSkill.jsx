@@ -2,12 +2,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { MdArrowBack, MdAdd } from "react-icons/md";
-import { getUser } from "../../services/authService";
-import { getAllSkills, addSkillToUser} from "../../services/skillService";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { getAllSkills, addSkillToUser } from "../../services/skillService";
 import "../../App.css";
 
-function AddSkill() {
 
+function AddSkill() {
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [skills, setSkills] = useState([]);
@@ -42,8 +44,6 @@ function AddSkill() {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-
-        const user = getUser();
 
         if (!user) {
             return;

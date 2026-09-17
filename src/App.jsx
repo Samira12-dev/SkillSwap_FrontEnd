@@ -21,11 +21,10 @@ import SessionDetails from "./components/sessions/SessionDetails";
 import Messages from "./pages/Messages";
 import Notifications from "./pages/Notifications";
 import AddSkill from "./components/skills/AddSkill";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
     return (
-        <BrowserRouter>
-
             <Routes>
 
                 {/* Public routes */}
@@ -51,6 +50,7 @@ function App() {
                         <Route path="/messages" element={<Messages />} />
                         <Route path="/notifications" element={<Notifications />} />
                         <Route path="/skills/add" element={<AddSkill />} />
+                        <Route path="/profile/:userId" element={<UserProfile />} />
                     </Route>
 
                 </Route>
@@ -64,7 +64,6 @@ function App() {
 
             </Routes>
 
-        </BrowserRouter>
     );
 }
 

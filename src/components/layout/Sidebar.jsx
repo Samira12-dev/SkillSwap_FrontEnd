@@ -1,12 +1,16 @@
-
-import React from "react";
-import { Link } from "react-router-dom";
-import {  MdDashboard,  MdPeople,  MdEmojiEvents,  MdSwapHoriz, MdEvent,  MdNotifications,   MdSettings,MdPerson, MdSearch,  MdMessage,  MdLogout} from "react-icons/md";
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import {  MdDashboard,  MdPeople,  MdEmojiEvents,  MdSwapHoriz,  MdEvent,   MdNotifications,   MdSettings,   MdPerson,   MdSearch,MdMessage ,  MdLogout} from "react-icons/md";
 import { TbArrowsExchange } from "react-icons/tb";
+import { AuthContext } from "../../context/AuthContext";
 import "../../App.css";
 
 function Sidebar() {
-    const role = localStorage.getItem("role");
+    const { user, logout } = useContext(AuthContext);
+
+    if (!user) {
+        return null;
+    }
 
     return (
         <aside className="sidebar">
@@ -26,111 +30,110 @@ function Sidebar() {
             <nav className="sidebar-menu">
                 <ul>
 
-                    <li className="active">
-                        <Link to="/dashboard">
+                    <li>
+                        <NavLink to="/dashboard">
                             <MdDashboard />
                             <span>Dashboard</span>
-                        </Link>
+                        </NavLink>
                     </li>
 
-                    {role === "ADMIN" ? (
+                    {user.role === "ADMIN" ? (
                         <>
                             <li>
-                                <Link to="/users">
+                                <NavLink to="/users">
                                     <MdPeople />
                                     <span>Users</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/skills">
+                                <NavLink to="/skills">
                                     <MdEmojiEvents />
                                     <span>Skills</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/swap-requests">
+                                <NavLink to="/swap-requests">
                                     <MdSwapHoriz />
                                     <span>Swap Requests</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/sessions">
+                                <NavLink to="/sessions">
                                     <MdEvent />
                                     <span>Sessions</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/notifications">
+                                <NavLink to="/notifications">
                                     <MdNotifications />
                                     <span>Notifications</span>
                                     <span className="badge">3</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/settings">
+                                <NavLink to="/settings">
                                     <MdSettings />
                                     <span>Settings</span>
-                                </Link>
+                                </NavLink>
                             </li>
                         </>
                     ) : (
                         <>
                             <li>
-                                <Link to="/profile">
+                                <NavLink to="/profile">
                                     <MdPerson />
                                     <span>My Profile</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/skills">
+                                <NavLink to="/skills">
                                     <MdEmojiEvents />
                                     <span>My Skills</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/discover">
+                                <NavLink to="/discover">
                                     <MdSearch />
                                     <span>Discover Skills</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/swap-requests">
+                                <NavLink to="/swap-requests">
                                     <MdSwapHoriz />
                                     <span>Swap Requests</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/sessions">
+                                <NavLink to="/sessions">
                                     <MdEvent />
                                     <span>Sessions</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/messages">
+                                <NavLink to="/messages">
                                     <MdMessage />
                                     <span>Messages</span>
                                     <span className="badge">2</span>
-                                </Link>
+                                </NavLink>
                             </li>
 
                             <li>
-                                <Link to="/notifications">
+                                <NavLink to="/notifications">
                                     <MdNotifications />
                                     <span>Notifications</span>
                                     <span className="badge">3</span>
-                                </Link>
+                                </NavLink>
                             </li>
-
                         </>
                     )}
 
@@ -141,28 +144,36 @@ function Sidebar() {
 
                 <div className="user-info">
 
-                    <img
-                        src="https://i.pravatar.cc/100?img=12"
-                        alt="User Avatar"
-                        className="user-avatar"
-                    />
+                    <div className="user-avatar">
+                        {user.photo ? (
+                            <img
+                                src={user.photo}
+                                alt={`${user.firstName} ${user.lastName}`}
+                            />
+                        ) : (
+                            user.firstName?.charAt(0)
+                        )}
+                    </div>
 
                     <div className="user-details">
                         <span className="user-name">
-                            Alex Johnson
+                            {user.firstName} {user.lastName}
                         </span>
 
                         <span className="user-email">
-                            Samira@skillswap.com
+                            {user.email}
                         </span>
                     </div>
 
                 </div>
 
-                <Link to="/logout" className="logout-btn">
+                <button
+                    className="logout-btn"
+                    onClick={logout}
+                >
                     <MdLogout />
                     <span>Logout</span>
-                </Link>
+                </button>
 
             </div>
 

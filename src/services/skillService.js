@@ -27,3 +27,8 @@ export const getDiscoverSkills = async (page = 0, size = 12) => {
 
     return response.data;
 };
+
+export const getUserProfileSkills = async (userId) => {
+    const response = await api.get(`/skills/users/${userId}/profile-skills`);
+    return response.data;
+};

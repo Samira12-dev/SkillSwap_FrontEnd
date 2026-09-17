@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SkillList from "../components/skills/SkillList";
-import { getDiscoverSkills } from "../services/skillService";
+import { getDiscoverSkills, getUserSkills } from "../services/skillService";
+import { createSwapRequest } from "../services/swapRequestService";
+import { AuthContext } from "../context/AuthContext";
 import "../App.css";
 
 function DiscoverSkills() {
+    const { user } = useContext(AuthContext);
+
     const [skills, setSkills] = useState([]);
+    const [mySkills, setMySkills] = useState([]);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
     const [level, setLevel] = useState("");
@@ -12,6 +17,9 @@ function DiscoverSkills() {
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
+    const [selectedSkill, setSelectedSkill] = useState(null);
+    const [selectedOfferedSkill, setSelectedOfferedSkill] = useState("");
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         getDiscoverSkills(currentPage, 12)
@@ -24,6 +32,23 @@ function DiscoverSkills() {
             });
     }, [currentPage]);
 
+    useEffect(() => {
+        if (!user) {
+            return;
+        }
+
+        getUserSkills(user.id)
+            .then((data) => {
+                const offeredSkills = (data.content || []).filter(
+                    (skill) => skill.type === "OFFER"
+                );
+
+                setMySkills(offeredSkills);
+            })
+            .catch((error) => {
+                console.error("MY SKILLS ERROR:", error);
+            });
+    }, [user]);
 
     const categories = [
         ...new Set(skills.map((skill) => skill.category))
@@ -61,9 +86,42 @@ function DiscoverSkills() {
             matchesType
         );
     });
-console.log("Selected level:", level);
-console.log("All skills:", skills);
-console.log("Filtered skills:", filteredSkills);
+
+    const handleRequestSwap = (skill) => {
+        setSelectedSkill(skill);
+        setSelectedOfferedSkill("");
+        setMessage("");
+    };
+
+    const handleCloseRequest = () => {
+        setSelectedSkill(null);
+        setSelectedOfferedSkill("");
+        setMessage("");
+    };
+
+    const handleSubmitRequest = async (e) => {
+        e.preventDefault();
+
+        if (!user || !selectedSkill || !selectedOfferedSkill || !message.trim()) {
+            return;
+        }
+
+        try {
+            await createSwapRequest(user.id, {
+                receiverId: selectedSkill.userId,
+                skillOfferedId: Number(selectedOfferedSkill),
+                skillWantedId: selectedSkill.skillId,
+                message: message.trim()
+            });
+
+            alert("Swap request sent successfully");
+            handleCloseRequest();
+        } catch (error) {
+            console.error("REQUEST SWAP ERROR:", error);
+            alert("Failed to send swap request");
+        }
+    };
+
     return (
         <div className="discover-page">
             <div className="discover-header">
@@ -129,12 +187,13 @@ console.log("Filtered skills:", filteredSkills);
 
             <SkillList
                 skills={filteredSkills}
-                onRequestSwap={() => { }}
+                onRequestSwap={handleRequestSwap}
             />
+
             <div className="pagination">
                 <button
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
                     disabled={currentPage === 0}
-                    onClick={() => setCurrentPage(currentPage - 1)}
                 >
                     Previous
                 </button>
@@ -144,12 +203,72 @@ console.log("Filtered skills:", filteredSkills);
                 </span>
 
                 <button
-                    disabled={currentPage === totalPages - 1}
-                    onClick={() => setCurrentPage(currentPage + 1)}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    disabled={currentPage + 1 >= totalPages}
                 >
                     Next
                 </button>
             </div>
+
+            {selectedSkill && (
+                <div className="request-modal-overlay">
+                    <div className="request-modal">
+                        <h3>Request Skill Swap</h3>
+
+                        <p>
+                            Requesting <strong>{selectedSkill.skillName}</strong>{" "}
+                            from <strong>{selectedSkill.userName}</strong>
+                        </p>
+
+                        <form onSubmit={handleSubmitRequest}>
+                            <label>Your Skill</label>
+
+                            <select
+                                value={selectedOfferedSkill}
+                                onChange={(e) =>
+                                    setSelectedOfferedSkill(e.target.value)
+                                }
+                                required
+                            >
+                                <option value="">
+                                    Select a skill you can offer
+                                </option>
+
+                                {mySkills.map((skill) => (
+                                    <option
+                                        key={skill.id}
+                                        value={skill.skillId}
+                                    >
+                                        {skill.skillName}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <label>Message</label>
+
+                            <textarea
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="Write a message..."
+                                required
+                            />
+
+                            <div className="request-modal-actions">
+                                <button
+                                    type="button"
+                                    onClick={handleCloseRequest}
+                                >
+                                    Cancel
+                                </button>
+
+                                <button type="submit">
+                                    Send Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -38,10 +38,10 @@ function SkillCard({ skill, onRequestSwap }) {
 
             <div className="discover-card-actions">
                 <Link
-                    to={`/skills/${skill.userId}`}
+                    to={`/profile/${skill.userId}`}
                     className="link-btn"
                 >
-                    View Skill
+                    View Profile
                 </Link>
 
                 <button

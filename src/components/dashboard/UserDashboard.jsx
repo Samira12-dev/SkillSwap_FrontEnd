@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import { MdWavingHand, MdSwapHoriz, MdEvent, MdMessage, MdNotifications, MdAdd, MdSearch } from "react-icons/md";
 import "../../App.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getUser } from "../../services/authService";
 import { getUserDashboard } from "../../services/dashboardService";
 import { getReceivedRequests } from "../../services/swapRequestService";
 import { getMySessions } from "../../services/sessionService";
+import { AuthContext } from "../../context/AuthContext";
 
 function UserDashboard() {
 
-    const user = getUser();
+    const { user } = useContext(AuthContext);
 
     const [dashboard, setDashboard] = useState({
         pendingRequests: 0,
@@ -22,8 +23,6 @@ function UserDashboard() {
     const [upcomingSessions, setUpcomingSessions] = useState([]);
 
     useEffect(() => {
-        const user = getUser();
-
         if (!user) {
             return;
         }
@@ -35,11 +34,9 @@ function UserDashboard() {
             .catch((error) => {
                 console.error(error);
             });
-    }, []);
+    }, [user]);
 
     useEffect(() => {
-        const user = getUser();
-
         if (!user) {
             return;
         }
@@ -55,13 +52,11 @@ function UserDashboard() {
                 setPendingRequests(pending);
             })
             .catch((error) => {
-                console.error( error);
+                console.error(error);
             });
-    }, []);
+    }, [user]);
 
     useEffect(() => {
-        const user = getUser();
-
         if (!user) {
             return;
         }
@@ -77,9 +72,9 @@ function UserDashboard() {
                 setUpcomingSessions(upcoming);
             })
             .catch((error) => {
-                console.error( error);
+                console.error(error);
             });
-    }, []);
+    }, [user]);
 
     return (
         <div className="user-dashboard">

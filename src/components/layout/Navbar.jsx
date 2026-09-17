@@ -1,7 +1,9 @@
 import React from "react";
+import {  MdNotifications} from "react-icons/md";
 import "../../App.css";
 
 function Navbar() {
+    
     return (
           <header className="dashboard-navbar">
             <div className="navbar-left">
@@ -20,7 +22,7 @@ function Navbar() {
                 </div>
 
                 <button className="icon-btn">
-                    🔔
+                     <MdNotifications />
                     <span className="notification-dot"></span>
                 </button>
 

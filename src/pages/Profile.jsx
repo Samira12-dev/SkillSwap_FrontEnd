@@ -1,34 +1,13 @@
-import { Link } from "react-router-dom";
-import { MdEdit, MdLocationOn, MdCalendarToday } from "react-icons/md";
-import { getUser } from "../services/authService";
-import "../App.css";
-import { getUserById } from "../services/userService";
-import { useState, useEffect } from "react";
 
+import { Link } from "react-router-dom";
+import { MdEdit, MdLocationOn, MdCalendarToday, MdStar } from "react-icons/md";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import "../App.css";
 
 function MyProfile() {
-    
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const loggedUser = getUser();
-
-        if (!loggedUser) {
-            return;
-        }
-
-        getUserById(loggedUser.id)
-            .then((data) => {
-                console.log("PROFILE FROM BACKEND:", data);
-                setUser(data);
-            })
-            .catch((error) => {
-                console.error("Error loading profile:", error);
-            });
-    }, []);
-
-
-
+    const { user } = useContext(AuthContext);
+ console.log("USER:", user);
     return (
         <div className="profile-page">
             <div className="profile-header">
@@ -62,19 +41,19 @@ function MyProfile() {
                             {user?.city || "No city"}
                         </p>
 
-                        <div className="rating-stars">
-                            <span className="stars">★★★★★</span>
-                            <span className="rating-num">
-                                {user?.rating || 0}
-                            </span>
+                        <div className="profile-rating">
+                            <MdStar />
+                            <span>{user?.rating ?? 0}</span>
                         </div>
 
                         <div className="member-since">
                             <MdCalendarToday />
-                            Member since{" "}
-                            {user?.createdAt
-                                ? new Date(user.createdAt).toLocaleDateString()
-                                : "N/A"}
+                            <span>
+                                Member since{" "}
+                                {user?.createdAt
+                                    ? new Date(user.createdAt).toLocaleDateString()
+                                    : "N/A"}
+                            </span>
                         </div>
                     </div>
 
@@ -121,9 +100,12 @@ function MyProfile() {
 
                             <div className="info-item full-width">
                                 <label>BIO</label>
-                                <p className="bio-text">
-                                    {user?.bio || "No bio added yet."}
-                                </p>
+                                <p>{user?.bio || "No bio available"}</p>
+                            </div>
+
+                            <div className="info-item full-width">
+                                <label>ROLE</label>
+                                <p>{user?.role || "N/A"}</p>
                             </div>
                         </div>
                     </div>
@@ -134,3 +116,4 @@ function MyProfile() {
 }
 
 export default MyProfile;
+

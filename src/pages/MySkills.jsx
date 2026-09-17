@@ -9,13 +9,17 @@ import {
 import { getUser } from "../services/authService";
 import { getUserSkills } from "../services/skillService";
 import "../App.css";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
 
 function MySkills() {
+    
+    const { user } = useContext(AuthContext);
+
     const [skills, setSkills] = useState([]);
 
     useEffect(() => {
-        const user = getUser();
-
         if (!user) {
             return;
         }
@@ -27,7 +31,8 @@ function MySkills() {
             .catch((error) => {
                 console.error("Error loading skills:", error);
             });
-    }, []);
+    }, [user]);
+    ;
 
     const offeredSkills = skills.filter(
         (skill) => skill.type === "OFFER"
