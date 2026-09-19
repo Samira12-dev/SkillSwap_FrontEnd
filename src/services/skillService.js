@@ -47,3 +47,13 @@ export const getUserProfileSkills = async (userId) => {
     const response = await api.get(`/skills/users/${userId}/profile-skills`);
     return response.data;
 };
+
+
+export const getAllSkillsToAdmin = async (page, size) => {
+    return api.get("/skills/admin/details", {
+        params: { page, size }
+    });
+};
+
+
+    

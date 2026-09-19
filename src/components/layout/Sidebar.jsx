@@ -28,8 +28,9 @@ function Sidebar() {
 
 
 
+
     useEffect(() => {
-        if (!user?.id) return;
+        if (!user?.id || user.role !== "USER") return;
 
         const loadUnreadMessages = () => {
             getUserDashboard(user.id)
@@ -48,7 +49,11 @@ function Sidebar() {
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [user]);
+    }, [user, setUnreadMessages]);
+
+
+
+
 
     if (!user) {
         return null;
@@ -115,7 +120,7 @@ function Sidebar() {
                                 </NavLink>
                             </li>
 
-                    
+
                         </>
                     ) : (
                         <>

@@ -1,39 +1,37 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdSearch, MdVisibility, MdEdit, MdDelete } from "react-icons/md";
 import "../../App.css";
+import { getAllSkillsToAdmin } from "../../services/skillService";
 
 function AdminSkills() {
     const [search, setSearch] = useState("");
+    const [skills, setSkills] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [size, setSize] = useState(10)
 
-    const skills = [
-        {
-            id: 1,
-            name: "Java",
-            category: "Programming",
-            level: "ADVANCED",
-            user: "Adam Smith"
-        },
-        {
-            id: 2,
-            name: "React",
-            category: "Programming",
-            level: "INTERMEDIATE",
-            user: "Sara Ali"
-        },
-        {
-            id: 3,
-            name: "English",
-            category: "Languages",
-            level: "BEGINNER",
-            user: "John Doe"
+
+
+    const getSkills = async () => {
+        try {
+            const res = await getAllSkillsToAdmin(currentPage, size);
+
+            setSkills(res.data.content);
+            setTotalPages(res.data.totalPages);
+        } catch (error) {
+            console.log(error);
         }
-    ];
+    };
+    useEffect(() => {
+        getSkills();
+    }, [currentPage, size])
+
 
     const filteredSkills = skills.filter((skill) =>
-        skill.name.toLowerCase().includes(search.toLowerCase()) ||
-        skill.category.toLowerCase().includes(search.toLowerCase()) ||
-        skill.user.toLowerCase().includes(search.toLowerCase())
+        skill.skillName?.toLowerCase().includes(search.toLowerCase()) ||
+        skill.category?.toLowerCase().includes(search.toLowerCase()) ||
+        skill.userName?.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
@@ -64,6 +62,7 @@ function AdminSkills() {
                             <th>Skill</th>
                             <th>Category</th>
                             <th>Level</th>
+                            <th>Type</th>
                             <th>User</th>
                             <th>Actions</th>
                         </tr>
@@ -72,21 +71,17 @@ function AdminSkills() {
                     <tbody>
                         {filteredSkills.map((skill) => (
                             <tr key={skill.id}>
-                                <td>{skill.name}</td>
+                                <td>{skill.skillName}</td>
                                 <td>{skill.category}</td>
                                 <td>{skill.level}</td>
-                                <td>{skill.user}</td>
+                                <td>{skill.type}</td>
+                                <td>{skill.userName}</td>
+
                                 <td>
                                     <div className="admin-actions-small">
-                                        <button>
-                                            <MdVisibility />
-                                        </button>
-                                        <button>
-                                            <MdEdit />
-                                        </button>
-                                        <button>
-                                            <MdDelete />
-                                        </button>
+                                        <button><MdVisibility /></button>
+                                        <button><MdEdit /></button>
+                                        <button><MdDelete /></button>
                                     </div>
                                 </td>
                             </tr>
