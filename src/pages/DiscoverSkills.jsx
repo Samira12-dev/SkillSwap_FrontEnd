@@ -1,3 +1,4 @@
+
 import { useContext, useEffect, useState } from "react";
 import SkillList from "../components/skills/SkillList";
 import { getDiscoverSkills, getUserSkills } from "../services/skillService";
@@ -10,10 +11,12 @@ function DiscoverSkills() {
 
     const [skills, setSkills] = useState([]);
     const [mySkills, setMySkills] = useState([]);
+
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
     const [level, setLevel] = useState("");
     const [type, setType] = useState("");
+
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
@@ -21,23 +24,23 @@ function DiscoverSkills() {
     const [selectedOfferedSkill, setSelectedOfferedSkill] = useState("");
     const [message, setMessage] = useState("");
 
+    const size = 9;
+
     useEffect(() => {
-        getDiscoverSkills(currentPage, 12)
+        getDiscoverSkills(currentPage, size)
             .then((data) => {
-                setSkills(data.content);
+                setSkills(data.content || []);
                 setTotalPages(data.totalPages);
             })
             .catch((error) => {
-                console.error("DISCOVER ERROR:", error);
+                console.error( error);
             });
     }, [currentPage]);
 
     useEffect(() => {
-        if (!user) {
-            return;
-        }
+        if (!user) return;
 
-        getUserSkills(user.id)
+        getUserSkills(user.id, 0, size)
             .then((data) => {
                 const offeredSkills = (data.content || []).filter(
                     (skill) => skill.type === "OFFER"
@@ -46,7 +49,7 @@ function DiscoverSkills() {
                 setMySkills(offeredSkills);
             })
             .catch((error) => {
-                console.error("MY SKILLS ERROR:", error);
+                console.error(error);
             });
     }, [user]);
 
@@ -65,26 +68,21 @@ function DiscoverSkills() {
     const filteredSkills = skills.filter((skill) => {
         const searchValue = search.toLowerCase();
 
-        const matchesSearch =
+        const searchMatch =
             skill.skillName?.toLowerCase().includes(searchValue) ||
             skill.userName?.toLowerCase().includes(searchValue) ||
             skill.category?.toLowerCase().includes(searchValue);
 
-        const matchesCategory =
-            !category || skill.category === category;
+        const categoryMatch =
+            category === "" || skill.category === category;
 
-        const matchesLevel =
-            !level || skill.level === level;
+        const levelMatch =
+            level === "" || skill.level === level;
 
-        const matchesType =
-            !type || skill.type === type;
+        const typeMatch =
+            type === "" || skill.type === type;
 
-        return (
-            matchesSearch &&
-            matchesCategory &&
-            matchesLevel &&
-            matchesType
-        );
+        return searchMatch && categoryMatch && levelMatch && typeMatch;
     });
 
     const handleRequestSwap = (skill) => {
@@ -102,7 +100,7 @@ function DiscoverSkills() {
     const handleSubmitRequest = async (e) => {
         e.preventDefault();
 
-        if (!user || !selectedSkill || !selectedOfferedSkill || !message.trim()) {
+        if (!selectedOfferedSkill || !message.trim()) {
             return;
         }
 
@@ -118,7 +116,7 @@ function DiscoverSkills() {
             handleCloseRequest();
         } catch (error) {
             console.error("REQUEST SWAP ERROR:", error);
-            alert("Failed to send swap request");
+            alert(" send swap request is failed");
         }
     };
 
@@ -126,7 +124,6 @@ function DiscoverSkills() {
         <div className="discover-page">
             <div className="discover-header">
                 <h2>Discover Skills</h2>
-
                 <p>
                     Find people with skills you want to learn and connect
                     for a swap.
@@ -192,7 +189,7 @@ function DiscoverSkills() {
 
             <div className="pagination">
                 <button
-                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                    onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 0}
                 >
                     Previous
@@ -203,7 +200,7 @@ function DiscoverSkills() {
                 </span>
 
                 <button
-                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={currentPage + 1 >= totalPages}
                 >
                     Next
@@ -216,8 +213,9 @@ function DiscoverSkills() {
                         <h3>Request Skill Swap</h3>
 
                         <p>
-                            Requesting <strong>{selectedSkill.skillName}</strong>{" "}
-                            from <strong>{selectedSkill.userName}</strong>
+                            Requesting{" "}
+                            <strong>{selectedSkill.skillName}</strong> from{" "}
+                            <strong>{selectedSkill.userName}</strong>
                         </p>
 
                         <form onSubmit={handleSubmitRequest}>
@@ -274,3 +272,4 @@ function DiscoverSkills() {
 }
 
 export default DiscoverSkills;
+

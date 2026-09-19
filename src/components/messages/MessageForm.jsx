@@ -1,40 +1,44 @@
+
 import { useState } from "react";
 import { Send } from "lucide-react";
 
-function MessageForm({ onSend }) {
+function MessageForm({ onSend }){
+    const [content,setContent]=useState("");
 
-    const [content, setContent] = useState("");
-
-    const handleSubmit = (e) => {
+    const handleSubmit=(e)=>{
         e.preventDefault();
 
-        if (!content.trim()) {
-            return;
-        }
+        const message=content.trim();
 
-        onSend(content);
+        if(!message||message.length>2000)return;
 
+        onSend(message);
         setContent("");
     };
 
-    return (
+    return(
         <form className="chat-footer" onSubmit={handleSubmit}>
-
             <div className="input-container">
-
                 <input
                     type="text"
                     placeholder="Type a message..."
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    maxLength={2000}
+                    onChange={(e)=>setContent(e.target.value)}
                 />
 
-                <button type="submit" className="send-btn">
-                    <Send size={18} />
+                <button
+                    type="submit"
+                    className="send-btn"
+                    disabled={!content.trim()}
+                >
+                    <Send size={18}/>
                 </button>
-
             </div>
 
+            {/* <span className="message-counter">
+                {content.length}/2000
+            </span> */}
         </form>
     );
 }

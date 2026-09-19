@@ -1,11 +1,16 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
 import { MdSwapHoriz, MdArrowBack, MdArrowForward } from "react-icons/md";
 import "../../App.css";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { login } from "../../services/authService";
+import { AuthContext } from "../../context/AuthContext";
+    
 
 function Login() {
     const navigate = useNavigate();
+    const { login: authLogin } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -25,8 +30,11 @@ function Login() {
         try {
             const data = await login(formData);
 
-            localStorage.setItem("token", data.token);
-            navigate("/dashboard");
+            authLogin(data.token);
+
+            const decodedToken = jwtDecode(data.token);
+
+            navigate(decodedToken.role === "ADMIN" ? "/admin" : "/dashboard");
         } catch (error) {
             console.error("Login error:", error);
         }
@@ -64,13 +72,9 @@ function Login() {
                         <p>Sign in to your SkillSwap account.</p>
                     </div>
 
-                    <form
-                        className="login-form"
-                        onSubmit={handleSubmit}
-                    >
+                    <form className="login-form" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label>Email</label>
-
                             <input
                                 type="email"
                                 name="email"
@@ -83,7 +87,6 @@ function Login() {
 
                         <div className="form-group">
                             <label>Password</label>
-
                             <input
                                 type="password"
                                 name="password"
@@ -95,18 +98,12 @@ function Login() {
                         </div>
 
                         <div className="login-actions">
-                            <Link
-                                to="/"
-                                className="login-back-btn"
-                            >
+                            <Link to="/" className="login-back-btn">
                                 <MdArrowBack />
                                 Back
                             </Link>
 
-                            <button
-                                type="submit"
-                                className="login-btn"
-                            >
+                            <button type="submit" className="login-btn">
                                 Login
                                 <MdArrowForward />
                             </button>
@@ -126,3 +123,4 @@ function Login() {
 }
 
 export default Login;
+

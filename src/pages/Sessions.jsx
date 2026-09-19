@@ -1,51 +1,60 @@
-import { useState } from "react";
 import {
     CalendarDays,
     CheckCircle2,
-    Clock3,
     Plus,
     XCircle
 } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 import "../App.css";
 import SessionList from "../components/sessions/SessionList";
 import SessionForm from "../components/sessions/SessionForm";
+import { AuthContext } from "../context/AuthContext";
+import {
+    getMySessions,
+    createSession,
+    acceptSession,
+    cancelSession,
+    completeSession
+} from "../services/sessionService";
+import { getMyConversations } from "../services/conversationService";
 
 function Sessions() {
+    const { user } = useContext(AuthContext);
+
+    const [sessions, setSessions] = useState([]);
+    const [conversations, setConversations] = useState([]);
     const [activeTab, setActiveTab] = useState("upcoming");
     const [showForm, setShowForm] = useState(false);
 
-    const [sessions, setSessions] = useState([
-        {
-            id: 1,
-            date: "2026-09-20T14:00:00",
-            duration: 60,
-            mode: "ONLINE",
-            status: "CONFIRMED",
-            conversationId: 4,
-            skillName: "Java",
-            userName: "Yassine Amrani"
-        },
-        {
-            id: 2,
-            date: "2026-09-25T16:30:00",
-            duration: 45,
-            mode: "ONLINE",
-            status: "PROPOSED",
-            conversationId: 5,
-            skillName: "React",
-            userName: "Sarah Chen"
-        },
-        {
-            id: 3,
-            date: "2026-08-22T15:00:00",
-            duration: 60,
-            mode: "ONLINE",
-            status: "COMPLETED",
-            conversationId: 6,
-            skillName: "English",
-            userName: "Sara Alaoui"
-        }
-    ]);
+    useEffect(() => {
+        if (!user?.id) return;
+
+        getMySessions(user.id)
+            .then((data) => {
+                setSessions(data.content || []);
+            })
+            .catch((error) => {
+                console.error("Erro in session:", error);
+            });
+
+        getMyConversations(user.id)
+            .then((data) => {
+                const list = data.content || [];
+
+                const formattedList = list.map((conversation) => ({
+                    ...conversation,
+                    name:
+                        conversation.senderId === user.id
+                            ? conversation.receiverName
+                            : conversation.senderName
+                }));
+
+                setConversations(formattedList);
+            })
+            .catch((error) => {
+                console.error("eror of conversation:", error);
+            });
+    }, [user]);
 
     const upcomingSessions = sessions.filter(
         (session) =>
@@ -71,21 +80,57 @@ function Sessions() {
         displayedSessions = cancelledSessions;
     }
 
-    const handleSchedule = (data) => {
-        console.log("Schedule session:", data);
-        setShowForm(false);
+    const handleSchedule = async (data) => {
+        try {
+            const session = await createSession(data, user.id);
+
+            setSessions((prev) => [...prev, session]);
+            setShowForm(false);
+        } catch (error) {
+            console.error("Error in Create session:", error);
+        }
     };
 
-    const handleAccept = (id) => {
-        console.log("Accept session:", id);
+    const handleAccept = async (id) => {
+        try {
+            const session = await acceptSession(id, user.id);
+
+            setSessions((prev) =>
+                prev.map((item) =>
+                    item.id === id ? session : item
+                )
+            );
+        } catch (error) {
+            console.error("accept error:", error);
+        }
     };
 
-    const handleCancel = (id) => {
-        console.log("Cancel session:", id);
+    const handleCancel = async (id) => {
+        try {
+            const session = await cancelSession(id, user.id);
+
+            setSessions((prev) =>
+                prev.map((item) =>
+                    item.id === id ? session : item
+                )
+            );
+        } catch (error) {
+            console.error("CANCEL ERROR:", error);
+        }
     };
 
-    const handleComplete = (id) => {
-        console.log("Complete session:", id);
+    const handleComplete = async (id) => {
+        try {
+            const session = await completeSession(id, user.id);
+
+            setSessions((prev) =>
+                prev.map((item) =>
+                    item.id === id ? session : item
+                )
+            );
+        } catch (error) {
+            console.error("COMPLETE ERROR:", error);
+        }
     };
 
     return (
@@ -108,10 +153,12 @@ function Sessions() {
 
             {showForm && (
                 <SessionForm
+                    conversations={conversations}
                     onSubmit={handleSchedule}
                     onCancel={() => setShowForm(false)}
                 />
             )}
+
 
             <div className="session-stats">
                 <div className="session-stat-card">

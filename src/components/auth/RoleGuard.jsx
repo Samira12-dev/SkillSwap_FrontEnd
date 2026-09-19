@@ -1,18 +1,22 @@
-import { getUser } from "../../services/authService";
 
 import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function RoleGuard({ roles, children }) {
-    const user = getUser();
+function RoleGuard({ roles, children }) {
+    console.log("ROLE GUARD WORKING");
+    const { user } = useContext(AuthContext);
 
-    if (!user) {
-        return <Navigate to="/login" replace />;
-    }
+    console.log("USER:", user);
+    console.log("ROLE:", user?.role);
+    console.log("ALLOWED:", roles);
 
-    if (!roles.includes(user.role)) {
+    if (!roles.includes(user?.role)) {
         return <Navigate to="/access-denied" replace />;
     }
 
     return children;
 }
+
+export default RoleGuard;
 

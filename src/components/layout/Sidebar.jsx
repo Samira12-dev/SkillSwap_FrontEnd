@@ -1,26 +1,68 @@
-import React, { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import {  MdDashboard,  MdPeople,  MdEmojiEvents,  MdSwapHoriz,  MdEvent,   MdNotifications,   MdSettings,   MdPerson,   MdSearch,MdMessage ,  MdLogout} from "react-icons/md";
+import {
+    MdDashboard,
+    MdPeople,
+    MdEmojiEvents,
+    MdSwapHoriz,
+    MdEvent,
+    MdNotifications,
+    MdSettings,
+    MdPerson,
+    MdSearch,
+    MdMessage,
+    MdLogout
+} from "react-icons/md";
 import { TbArrowsExchange } from "react-icons/tb";
 import { AuthContext } from "../../context/AuthContext";
+import { getUserDashboard } from "../../services/dashboardService";
 import "../../App.css";
 
 function Sidebar() {
-    const { user, logout } = useContext(AuthContext);
+    const {
+        user,
+        logout,
+        unreadMessages,
+        setUnreadMessages
+    } = useContext(AuthContext);
+
+
+
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const loadUnreadMessages = () => {
+            getUserDashboard(user.id)
+                .then((data) => {
+                    setUnreadMessages(data.unreadMessages || 0);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        };
+
+        loadUnreadMessages();
+
+        const interval = setInterval(() => {
+            loadUnreadMessages();
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [user]);
 
     if (!user) {
         return null;
     }
 
+    const dashboardPath = user.role === "ADMIN" ? "/admin" : "/dashboard";
+
     return (
         <aside className="sidebar">
-
             <div className="sidebar-header">
                 <div className="logo">
                     <span className="logo-icon">
                         <TbArrowsExchange />
                     </span>
-
                     <span className="logo-text">
                         SkillSwap
                     </span>
@@ -29,9 +71,8 @@ function Sidebar() {
 
             <nav className="sidebar-menu">
                 <ul>
-
                     <li>
-                        <NavLink to="/dashboard">
+                        <NavLink to={dashboardPath} end>
                             <MdDashboard />
                             <span>Dashboard</span>
                         </NavLink>
@@ -40,110 +81,105 @@ function Sidebar() {
                     {user.role === "ADMIN" ? (
                         <>
                             <li>
-                                <NavLink to="/users">
+                                <NavLink to="/admin/users">
                                     <MdPeople />
                                     <span>Users</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/skills">
+                                <NavLink to="/admin/skills">
                                     <MdEmojiEvents />
                                     <span>Skills</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/swap-requests">
+                                <NavLink to="/admin/swap-requests">
                                     <MdSwapHoriz />
                                     <span>Swap Requests</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/sessions">
+                                <NavLink to="/admin/sessions">
                                     <MdEvent />
                                     <span>Sessions</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/notifications">
+                                <NavLink to="/admin/notifications">
                                     <MdNotifications />
                                     <span>Notifications</span>
-                                    <span className="badge">3</span>
                                 </NavLink>
                             </li>
 
-                            <li>
-                                <NavLink to="/settings">
-                                    <MdSettings />
-                                    <span>Settings</span>
-                                </NavLink>
-                            </li>
+                    
                         </>
                     ) : (
                         <>
                             <li>
-                                <NavLink to="/profile">
+                                <NavLink to="profile">
                                     <MdPerson />
                                     <span>My Profile</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/skills">
+                                <NavLink to="skills">
                                     <MdEmojiEvents />
                                     <span>My Skills</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/discover">
+                                <NavLink to="discover">
                                     <MdSearch />
                                     <span>Discover Skills</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/swap-requests">
+                                <NavLink to="swap-requests">
                                     <MdSwapHoriz />
                                     <span>Swap Requests</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/sessions">
+                                <NavLink to="sessions">
                                     <MdEvent />
                                     <span>Sessions</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/messages">
+                                <NavLink to="messages">
                                     <MdMessage />
                                     <span>Messages</span>
-                                    <span className="badge">2</span>
+
+                                    {unreadMessages > 0 && (
+                                        <span className="badge">
+                                            {unreadMessages}
+                                        </span>
+                                    )}
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink to="/notifications">
+                                <NavLink to="notifications">
                                     <MdNotifications />
                                     <span>Notifications</span>
-                                    <span className="badge">3</span>
                                 </NavLink>
                             </li>
                         </>
                     )}
-
                 </ul>
             </nav>
 
             <div className="sidebar-footer">
-
                 <div className="user-info">
-
                     <div className="user-avatar">
                         {user.photo ? (
                             <img
@@ -164,7 +200,6 @@ function Sidebar() {
                             {user.email}
                         </span>
                     </div>
-
                 </div>
 
                 <button
@@ -174,12 +209,9 @@ function Sidebar() {
                     <MdLogout />
                     <span>Logout</span>
                 </button>
-
             </div>
-
         </aside>
     );
 }
 
 export default Sidebar;
-

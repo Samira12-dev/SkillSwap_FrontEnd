@@ -10,6 +10,8 @@ import {
 } from "react-icons/md";
 import { getUserById } from "../services/userService";
 import { getUserProfileSkills } from "../services/skillService";
+import { getReviewsByUser, getAverageRating } from "../services/reviewService";
+import ReviewList from "../components/reviews/ReviewList";
 import "../App.css";
 
 function UserProfile() {
@@ -17,6 +19,8 @@ function UserProfile() {
 
     const [user, setUser] = useState(null);
     const [skills, setSkills] = useState([]);
+    const [reviews, setReviews] = useState([]);
+    const [averageRating, setAverageRating] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -27,6 +31,12 @@ function UserProfile() {
 
                 const skillsData = await getUserProfileSkills(userId);
                 setSkills(skillsData?.content || []);
+
+                const reviewsData = await getReviewsByUser(userId);
+                setReviews(reviewsData?.content || []);
+
+                const average = await getAverageRating(userId);
+                setAverageRating(average || 0);
             } catch (error) {
                 console.error("USER PROFILE ERROR:", error);
                 console.error("STATUS:", error.response?.status);
@@ -92,7 +102,7 @@ function UserProfile() {
 
                         <div className="user-profile-rating">
                             <MdStar />
-                            <span>{user.rating ?? "0.0"}</span>
+                            <span>{averageRating.toFixed(1)} ({reviews.length} reviews)</span>
                         </div>
                     </div>
                 </div>
@@ -190,6 +200,11 @@ function UserProfile() {
                             ))}
                         </div>
                     )}
+                </div>
+
+                <div className="user-profile-section">
+                    <h3>Reviews</h3>
+                    <ReviewList reviews={reviews} />
                 </div>
             </div>
         </div>

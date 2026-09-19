@@ -1,57 +1,35 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ArrowDownUp, Inbox, Send } from "lucide-react";
 import "../App.css";
 import SwapRequestList from "../components/swapRequests/SwapRequestList";
+import { AuthContext } from "../context/AuthContext";
+import { getReceivedRequests, getSentRequests, acceptSwapRequest, rejectSwapRequest, cancelSwapRequest } from "../services/swapRequestService";
 
 function SwapRequests() {
+    const { user } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("all");
+    const [receivedRequests, setReceivedRequests] = useState([]);
+    const [sentRequests, setSentRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const receivedRequests = [
-        {
-            id: 1,
-            senderName: "Yassine Amrani",
-            senderCity: "Beni Mellal",
-            skillOfferedName: "Java",
-            skillWantedName: "English",
-            message: "I can help you improve your Java skills if you can help me with English.",
-            swapStatus: "PENDING",
-            createdAt: "Today"
-        },
-        {
-            id: 2,
-            senderName: "Salma El Idrissi",
-            senderCity: "Casablanca",
-            skillOfferedName: "React",
-            skillWantedName: "French",
-            message: "I would like to practice French while sharing my React knowledge.",
-            swapStatus: "ACCEPTED",
-            createdAt: "Yesterday",
-            conversationId: 4
-        }
-    ];
+    useEffect(() => {
+        if (!user?.id) return;
 
-    const sentRequests = [
-        {
-            id: 3,
-            receiverName: "Omar Benali",
-            receiverCity: "Rabat",
-            skillOfferedName: "Java",
-            skillWantedName: "English",
-            message: "I would like to exchange Java and English skills with you.",
-            swapStatus: "PENDING",
-            createdAt: "2 days ago"
-        },
-        {
-            id: 4,
-            receiverName: "Sara Alaoui",
-            receiverCity: "Marrakech",
-            skillOfferedName: "JavaScript",
-            skillWantedName: "React",
-            message: "I can help with JavaScript and I would like to learn React.",
-            swapStatus: "COMPLETED",
-            createdAt: "5 days ago"
-        }
-    ];
+        const loadRequests = async () => {
+            try {
+                const received = await getReceivedRequests(user.id);
+                setReceivedRequests(received.content || []);
+
+                const sent = await getSentRequests(user.id);
+                setSentRequests(sent.content || []);
+            } catch (error) {
+                console.error("Error loading requests:", error);
+            }
+            setLoading(false);
+        };
+
+        loadRequests();
+    }, [user]);
 
     const allRequests = [...receivedRequests, ...sentRequests];
 
@@ -65,17 +43,57 @@ function SwapRequests() {
         displayedRequests = sentRequests;
     }
 
-    const handleAccept = (id) => {
-        console.log("Accept:", id);
+    const handleAccept = async (id) => {
+    try {
+        const updatedRequest = await acceptSwapRequest(id, user.id);
+
+        setReceivedRequests((prev) =>
+            prev.map((request) =>
+                request.id === id ? updatedRequest : request
+            )
+        );
+    } catch (error) {
+        console.error("ACCEPT ERROR:", error);
+    }
+};
+    const handleReject = async (id) => {
+        try {
+            const request = await rejectSwapRequest(id, user.id);
+            setReceivedRequests(receivedRequests.map(item => item.id === id ? request : item));
+        } catch (error) {
+            console.error("Reject error:", error);
+        }
     };
 
-    const handleReject = (id) => {
-        console.log("Reject:", id);
+    const handleCancel = async (id) => {
+        try {
+            await cancelSwapRequest(id, user.id);
+
+            setSentRequests((prev) =>
+                prev.filter((request) => request.id !== id)
+            );
+        } catch (error) {
+            console.error( error);
+        }
     };
 
-    const handleCancel = (id) => {
-        console.log("Cancel:", id);
-    };
+
+    if (loading) {
+        return (
+            <div className="swap-page">
+                <div className="swap-page-header">
+                    <div>
+                        <span className="swap-page-label">SKILLSWAP</span>
+                        <h1>Swap Requests</h1>
+                        <p>Manage your skill exchange requests and connections.</p>
+                    </div>
+                </div>
+                <div className="swap-content">
+                    <p>Loading requests...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="swap-page">
@@ -85,7 +103,6 @@ function SwapRequests() {
                     <h1>Swap Requests</h1>
                     <p>Manage your skill exchange requests and connections.</p>
                 </div>
-
                 <div className="swap-header-icon">
                     <ArrowDownUp size={24} />
                 </div>
@@ -125,26 +142,17 @@ function SwapRequests() {
 
             <div className="swap-content">
                 <div className="swap-tabs">
-                    <button
-                        className={activeTab === "all" ? "swap-tab active" : "swap-tab"}
-                        onClick={() => setActiveTab("all")}
-                    >
+                    <button className={activeTab === "all" ? "swap-tab active" : "swap-tab"} onClick={() => setActiveTab("all")}>
                         All
                         <span>{allRequests.length}</span>
                     </button>
 
-                    <button
-                        className={activeTab === "received" ? "swap-tab active" : "swap-tab"}
-                        onClick={() => setActiveTab("received")}
-                    >
+                    <button className={activeTab === "received" ? "swap-tab active" : "swap-tab"} onClick={() => setActiveTab("received")}>
                         Received
                         <span>{receivedRequests.length}</span>
                     </button>
 
-                    <button
-                        className={activeTab === "sent" ? "swap-tab active" : "swap-tab"}
-                        onClick={() => setActiveTab("sent")}
-                    >
+                    <button className={activeTab === "sent" ? "swap-tab active" : "swap-tab"} onClick={() => setActiveTab("sent")}>
                         Sent
                         <span>{sentRequests.length}</span>
                     </button>
@@ -178,4 +186,3 @@ function SwapRequests() {
 }
 
 export default SwapRequests;
-

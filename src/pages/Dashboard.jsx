@@ -1,17 +1,18 @@
+import { useContext } from "react";
 import UserDashboard from "../components/dashboard/UserDashboard";
 import AdminDashboard from "../components/dashboard/AdminDashboard";
+import { AuthContext } from "../context/AuthContext";
 
 function Dashboard() {
-    const role = localStorage.getItem("role");
+    const { user } = useContext(AuthContext);
 
     return (
         <>
-            {role === "ADMIN" ? (
+            {user?.role === "ADMIN" ? (
                 <AdminDashboard />
             ) : (
                 <UserDashboard />
             )}
-            
         </>
     );
 }

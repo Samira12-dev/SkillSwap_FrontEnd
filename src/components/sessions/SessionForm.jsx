@@ -1,9 +1,8 @@
-
 import { CalendarDays, X } from "lucide-react";
 import { useState } from "react";
 import "../../App.css";
 
-function SessionForm({ onSubmit, onCancel }) {
+function SessionForm({ onSubmit, onCancel, conversations }) {
     const [formData, setFormData] = useState({
         date: "",
         time: "",
@@ -47,9 +46,7 @@ function SessionForm({ onSubmit, onCancel }) {
 
                     <div>
                         <h2>Schedule Session</h2>
-                        <p>
-                            Choose the date, time and session mode.
-                        </p>
+                        <p>Choose the date, time and session mode.</p>
                     </div>
 
                     <button
@@ -64,7 +61,6 @@ function SessionForm({ onSubmit, onCancel }) {
                 <div className="session-form-grid">
                     <div className="session-form-group">
                         <label>Date</label>
-
                         <input
                             type="date"
                             name="date"
@@ -76,7 +72,6 @@ function SessionForm({ onSubmit, onCancel }) {
 
                     <div className="session-form-group">
                         <label>Time</label>
-
                         <input
                             type="time"
                             name="time"
@@ -88,7 +83,6 @@ function SessionForm({ onSubmit, onCancel }) {
 
                     <div className="session-form-group">
                         <label>Duration</label>
-
                         <select
                             name="duration"
                             value={formData.duration}
@@ -105,7 +99,6 @@ function SessionForm({ onSubmit, onCancel }) {
 
                     <div className="session-form-group">
                         <label>Mode</label>
-
                         <select
                             name="mode"
                             value={formData.mode}
@@ -119,7 +112,6 @@ function SessionForm({ onSubmit, onCancel }) {
                     {formData.mode === "ONLINE" && (
                         <div className="session-form-group full">
                             <label>Google Meet Link</label>
-
                             <input
                                 type="url"
                                 name="meetingUrl"
@@ -132,16 +124,27 @@ function SessionForm({ onSubmit, onCancel }) {
                     )}
 
                     <div className="session-form-group full">
-                        <label>Conversation ID</label>
+                        <label>Conversation</label>
 
-                        <input
-                            type="number"
+                        <select
                             name="conversationId"
                             value={formData.conversationId}
                             onChange={handleChange}
-                            placeholder="Enter conversation ID"
                             required
-                        />
+                        >
+                            <option value="">
+                                Select conversation
+                            </option>
+
+                            {conversations.map((conversation) => (
+                                <option
+                                    key={conversation.id}
+                                    value={conversation.id}
+                                >
+                                    {conversation.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
@@ -167,4 +170,3 @@ function SessionForm({ onSubmit, onCancel }) {
 }
 
 export default SessionForm;
-

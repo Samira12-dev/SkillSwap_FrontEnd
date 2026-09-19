@@ -1,19 +1,74 @@
-import { ArrowLeft, CalendarDays, Clock3, MapPin, Video } from "lucide-react";
+import {
+    ArrowLeft,
+    CalendarDays,
+    Clock3,
+    MapPin,
+    Star,
+    Video
+} from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "../../App.css";
+import { getSessionById } from "../../services/sessionService";
+import { getConversationById } from "../../services/conversationService";
+import { createReview } from "../../services/reviewService";
+import ReviewForm from "../reviews/ReviewForm";
+import { AuthContext } from "../../context/AuthContext";
 
 function SessionDetails() {
     const { sessionId } = useParams();
+    const { user } = useContext(AuthContext);
 
-    const session = {
-        id: sessionId,
-        date: "2026-09-20T14:00:00",
-        duration: 60,
-        mode: "ONLINE",
-        status: "CONFIRMED",
-        meetingUrl: "https://meet.google.com/abc-defg-hij",
-        conversationId: 4
+    const [session, setSession] = useState(null);
+    const [reviewee, setReviewee] = useState(null);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+    useEffect(() => {
+        getSessionById(sessionId)
+            .then((data) => {
+                setSession(data);
+            })
+            .catch((error) => {
+                console.error("SESSION DETAILS ERROR:", error);
+            });
+    }, [sessionId]);
+
+    useEffect(() => {
+        if (!session || !user?.id || session.status !== "COMPLETED") return;
+
+        getConversationById(session.conversationId, user.id)
+            .then((conversation) => {
+                const isSender = conversation.senderId === user.id;
+
+                setReviewee({
+                    id: isSender ? conversation.receiverId : conversation.senderId,
+                    name: isSender ? conversation.receiverName : conversation.senderName
+                });
+            })
+            .catch((error) => {
+                console.error("CONVERSATION ERROR:", error);
+            });
+    }, [session, user]);
+
+    const handleReviewSubmit = async (data) => {
+        try {
+            await createReview(user.id, {
+                ...data,
+                revieweeId: reviewee.id,
+                sessionId: session.id
+            });
+
+            setShowReviewForm(false);
+            setReviewSubmitted(true);
+        } catch (error) {
+            console.error("CREATE REVIEW ERROR:", error);
+        }
     };
+
+    if (!session) {
+        return <div className="session-details-page">Loading...</div>;
+    }
 
     const date = new Date(session.date);
 
@@ -46,7 +101,9 @@ function SessionDetails() {
                     <p>View all information about this session.</p>
                 </div>
 
-                <span className={`session-status ${session.status.toLowerCase()}`}>
+                <span
+                    className={`session-status ${session.status.toLowerCase()}`}
+                >
                     {session.status}
                 </span>
             </div>
@@ -76,9 +133,7 @@ function SessionDetails() {
                         <Clock3 size={18} />
                         <div>
                             <span>Time</span>
-                            <strong>
-                                {formattedTime}
-                            </strong>
+                            <strong>{formattedTime}</strong>
                         </div>
                     </div>
 
@@ -86,9 +141,7 @@ function SessionDetails() {
                         <Clock3 size={18} />
                         <div>
                             <span>Duration</span>
-                            <strong>
-                                {session.duration} minutes
-                            </strong>
+                            <strong>{session.duration} minutes</strong>
                         </div>
                     </div>
 
@@ -126,6 +179,29 @@ function SessionDetails() {
                             <Video size={15} />
                             Join Session
                         </a>
+                    </div>
+                )}
+
+                {session.status === "COMPLETED" && (
+                    <div className="session-review-box">
+                        {reviewSubmitted ? (
+                            <p>Thanks for leaving a review!</p>
+                        ) : showReviewForm ? (
+                            <ReviewForm
+                                revieweeName={reviewee?.name}
+                                onSubmit={handleReviewSubmit}
+                                onCancel={() => setShowReviewForm(false)}
+                            />
+                        ) : (
+                            <button
+                                className="session-join-btn"
+                                onClick={() => setShowReviewForm(true)}
+                                disabled={!reviewee}
+                            >
+                                <Star size={15} />
+                                Leave a Review
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

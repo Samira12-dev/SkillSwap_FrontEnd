@@ -1,25 +1,25 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
     MdStar,
-    MdMoreVert,
+    MdEdit,
+    MdDelete,
     MdLightbulb,
     MdAdd
 } from "react-icons/md";
-import { getUser } from "../services/authService";
-import { getUserSkills } from "../services/skillService";
+import { getUserSkills, updateUserSkill, removeSkillFromUser } from "../services/skillService";
 import "../App.css";
-import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-
 function MySkills() {
-    
+
     const { user } = useContext(AuthContext);
 
     const [skills, setSkills] = useState([]);
+    const [editingSkillId, setEditingSkillId] = useState(null);
+    const [editLevel, setEditLevel] = useState("BEGINNER");
 
-    useEffect(() => {
+    const loadSkills = () => {
         if (!user) {
             return;
         }
@@ -31,8 +31,11 @@ function MySkills() {
             .catch((error) => {
                 console.error("Error loading skills:", error);
             });
+    };
+
+    useEffect(() => {
+        loadSkills();
     }, [user]);
-    ;
 
     const offeredSkills = skills.filter(
         (skill) => skill.type === "OFFER"
@@ -40,6 +43,98 @@ function MySkills() {
 
     const wantedSkills = skills.filter(
         (skill) => skill.type === "WANTED"
+    );
+
+    const startEdit = (skill) => {
+        setEditingSkillId(skill.id);
+        setEditLevel(skill.level);
+    };
+
+    const cancelEdit = () => {
+        setEditingSkillId(null);
+    };
+
+    const saveEdit = async (skill) => {
+        try {
+            await updateUserSkill(user.id, skill.skillId, {
+                skillId: skill.skillId,
+                type: skill.type,
+                level: editLevel
+            });
+
+            setEditingSkillId(null);
+            loadSkills();
+        } catch (error) {
+            console.error("Error updating skill:", error);
+        }
+    };
+
+    const deleteSkill = async (skill) => {
+        try {
+            await removeSkillFromUser(user.id, skill.skillId);
+            setSkills((prev) => prev.filter((item) => item.id !== skill.id));
+        } catch (error) {
+            console.error("Error deleting skill:", error);
+        }
+    };
+
+    const renderSkillItem = (skill, iconClass) => (
+        <div className="skill-detail-item" key={skill.id}>
+            <div className={`skill-detail-icon ${iconClass}`}>
+                <MdStar />
+            </div>
+
+            <div className="skill-detail-info">
+                <h4>{skill.skillName}</h4>
+                <span>{skill.category}</span>
+            </div>
+
+            {editingSkillId === skill.id ? (
+                <div className="skill-detail-right">
+                    <select
+                        value={editLevel}
+                        onChange={(e) => setEditLevel(e.target.value)}
+                    >
+                        <option value="BEGINNER">Beginner</option>
+                        <option value="INTERMEDIATE">Intermediate</option>
+                        <option value="ADVANCED">Advanced</option>
+                    </select>
+
+                    <button
+                        className="skill-more-btn"
+                        onClick={() => saveEdit(skill)}
+                    >
+                        Save
+                    </button>
+
+                    <button className="skill-more-btn" onClick={cancelEdit}>
+                        Cancel
+                    </button>
+                </div>
+            ) : (
+                <div className="skill-detail-right">
+                    <span className="skill-level green">
+                        {skill.level}
+                    </span>
+
+                    <button
+                        className="skill-more-btn"
+                        onClick={() => startEdit(skill)}
+                        title="Edit level"
+                    >
+                        <MdEdit />
+                    </button>
+
+                    <button
+                        className="skill-more-btn"
+                        onClick={() => deleteSkill(skill)}
+                        title="Delete skill"
+                    >
+                        <MdDelete />
+                    </button>
+                </div>
+            )}
+        </div>
     );
 
     return (
@@ -107,31 +202,9 @@ function MySkills() {
                     </div>
 
                     <div className="skill-list">
-                        {offeredSkills.map((skill) => (
-                            <div
-                                className="skill-detail-item"
-                                key={skill.id}
-                            >
-                                <div className="skill-detail-icon purple">
-                                    <MdStar />
-                                </div>
-
-                                <div className="skill-detail-info">
-                                    <h4>{skill.skillName}</h4>
-                                    <span>{skill.category}</span>
-                                </div>
-
-                                <div className="skill-detail-right">
-                                    <span className="skill-level green">
-                                        {skill.level}
-                                    </span>
-
-                                    <button className="skill-more-btn">
-                                        <MdMoreVert />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                        {offeredSkills.map((skill) =>
+                            renderSkillItem(skill, "purple")
+                        )}
                     </div>
                 </div>
 
@@ -150,31 +223,9 @@ function MySkills() {
                     </div>
 
                     <div className="skill-list">
-                        {wantedSkills.map((skill) => (
-                            <div
-                                className="skill-detail-item"
-                                key={skill.id}
-                            >
-                                <div className="skill-detail-icon yellow">
-                                    <MdStar />
-                                </div>
-
-                                <div className="skill-detail-info">
-                                    <h4>{skill.skillName}</h4>
-                                    <span>{skill.category}</span>
-                                </div>
-
-                                <div className="skill-detail-right">
-                                    <span className="skill-level blue">
-                                        Wanted
-                                    </span>
-
-                                    <button className="skill-more-btn">
-                                        <MdMoreVert />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                        {wantedSkills.map((skill) =>
+                            renderSkillItem(skill, "yellow")
+                        )}
                     </div>
                 </div>
             </div>

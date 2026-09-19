@@ -1,15 +1,37 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { updateProfile } from "../services/userService";
 import "../App.css";
 
 function EditProfile() {
+    const { user, updateUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
-        firstName: "Alex",
-        lastName: "Johnson",
-        email: "alex@skillswap.com",
-        city: "San Francisco, CA",
-        bio: "Full-stack developer with a passion for building products. I love learning new creative skills and meeting people from different backgrounds."
+        firstName: "",
+        lastName: "",
+        email: "",
+        city: "",
+        bio: "",
+        photo: ""
     });
+
+    const [error, setError] = useState("");
+    const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+        if (!user) return;
+
+        setFormData({
+            firstName: user.firstName || "",
+            lastName: user.lastName || "",
+            email: user.email || "",
+            city: user.city || "",
+            bio: user.bio || "",
+            photo: user.photo || ""
+        });
+    }, [user]);
 
     const handleChange = (e) => {
         setFormData({
@@ -18,10 +40,21 @@ function EditProfile() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
+        setSaving(true);
 
-        console.log("Updated profile:", formData);
+        try {
+            const updated = await updateProfile(user.id, formData);
+            updateUser(updated);
+            navigate("/profile");
+        } catch (err) {
+            console.error("UPDATE PROFILE ERROR:", err);
+            setError("Could not update your profile. Please try again.");
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -50,6 +83,8 @@ function EditProfile() {
                         <div className="edit-profile-card">
 
                             <h3>Personal Information</h3>
+
+                            {error && <p className="form-error">{error}</p>}
 
                             <div className="edit-form-grid">
 
@@ -134,18 +169,21 @@ function EditProfile() {
 
                             <div className="edit-photo-box">
                                 <img
-                                    src="https://i.pravatar.cc/150?img=12"
+                                    src={formData.photo || "https://i.pravatar.cc/150?img=12"}
                                     alt="Profile"
                                 />
 
-                                <button
-                                    type="button"
-                                    className="change-photo-btn"
-                                >
-                                    Change photo
-                                </button>
+                                <div className="edit-form-group full-width">
+                                    <label>Photo URL</label>
 
-                                <p>JPG, PNG or WEBP. Max 5MB.</p>
+                                    <input
+                                        type="text"
+                                        name="photo"
+                                        value={formData.photo}
+                                        onChange={handleChange}
+                                        placeholder="https://..."
+                                    />
+                                </div>
                             </div>
 
                         </div>
@@ -156,12 +194,16 @@ function EditProfile() {
 
                             <div className="account-info">
                                 <span>Member since</span>
-                                <strong>March 2024</strong>
+                                <strong>
+                                    {user?.createdAt
+                                        ? new Date(user.createdAt).toLocaleDateString()
+                                        : "N/A"}
+                                </strong>
                             </div>
 
                             <div className="account-info">
                                 <span>Account type</span>
-                                <strong>USER</strong>
+                                <strong>{user?.role || "USER"}</strong>
                             </div>
 
                         </div>
@@ -179,8 +221,9 @@ function EditProfile() {
                     <button
                         type="submit"
                         className="save-profile-btn"
+                        disabled={saving}
                     >
-                        Save changes
+                        {saving ? "Saving..." : "Save changes"}
                     </button>
 
                 </div>
@@ -192,4 +235,3 @@ function EditProfile() {
 }
 
 export default EditProfile;
-

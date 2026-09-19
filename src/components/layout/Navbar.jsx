@@ -1,11 +1,12 @@
-import React from "react";
-import {  MdNotifications} from "react-icons/md";
+import React, { useContext } from "react";
+import { MdNotifications } from "react-icons/md";
 import "../../App.css";
+import { AuthContext } from "../../context/AuthContext";
 
 function Navbar() {
-    
+    const { user } = useContext(AuthContext)
     return (
-          <header className="dashboard-navbar">
+        <header className="dashboard-navbar">
             <div className="navbar-left">
                 <span className="brand-sub">SKILLSWAP</span>
                 <h1 className="page-title">Dashboard</h1>
@@ -22,16 +23,19 @@ function Navbar() {
                 </div>
 
                 <button className="icon-btn">
-                     <MdNotifications />
+                    <MdNotifications />
                     <span className="notification-dot"></span>
                 </button>
 
                 <div className="profile-avatar">
                     <img
-                        src="https://i.pravatar.cc/100?img=12"
+                        src={user?.photo}
                         alt="Profile"
                     />
                 </div>
+                <span>
+                    {user?.firstName} {user?.lastName}
+                </span>
             </div>
         </header>
     );

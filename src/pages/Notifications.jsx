@@ -1,34 +1,50 @@
 import { Bell } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 import NotificationList from "../components/notifications/NotificationList";
+import { AuthContext } from "../context/AuthContext";
+import {
+    getNotificationsByUser,
+    markNotificationAsRead
+} from "../services/notificationService";
 import "../App.css";
 
 function Notifications() {
-    const notifications = [
-        {
-            id: 1,
-            type: "NEW_SWAP_REQUEST",
-            message: "Ahmed sent you a new swap request",
-            isRead: false,
-            createdAt: "10 minutes ago"
-        },
-        {
-            id: 2,
-            type: "REQUEST_ACCEPTED",
-            message: "Sara accepted your swap request",
-            isRead: true,
-            createdAt: "2 hours ago"
-        },
-        {
-            id: 3,
-            type: "NEW_MESSAGE",
-            message: "Youssef sent you a new message",
-            isRead: false,
-            createdAt: "Yesterday"
-        }
-    ];
+    const { user } = useContext(AuthContext);
+    const [notifications, setNotifications] = useState([]);
 
-    const handleRead = (id) => {
-        console.log("Mark as read:", id);
+    useEffect(() => {
+        if (!user?.id) return;
+
+        getNotificationsByUser(user.id)
+            .then((data) => {
+                const list = (data.content || []).map((notification) => ({
+                    ...notification,
+                    createdAt: notification.createdAt
+                        ? new Date(notification.createdAt).toLocaleString()
+                        : ""
+                }));
+
+                setNotifications(list);
+            })
+            .catch((error) => {
+                console.error("NOTIFICATIONS ERROR:", error);
+            });
+    }, [user]);
+
+    const handleRead = async (id) => {
+        try {
+            await markNotificationAsRead(id, user.id);
+
+            setNotifications((prev) =>
+                prev.map((notification) =>
+                    notification.id === id
+                        ? { ...notification, isRead: true }
+                        : notification
+                )
+            );
+        } catch (error) {
+            console.error("MARK AS READ ERROR:", error);
+        }
     };
 
     return (

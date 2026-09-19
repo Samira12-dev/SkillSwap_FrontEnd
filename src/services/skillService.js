@@ -2,8 +2,8 @@
 
 import api from "./api";
 
-export const getUserSkills = async (userId) => {
-    const response = await api.get(`/skills/users/${userId}/skills`);
+export const getUserSkills = async (userId, page, size) => {
+    const response = await api.get(`/skills/users/${userId}/skills?page=${page}&size=${size}`);
     return response.data;
 };
 
@@ -16,6 +16,21 @@ export const addSkillToUser = async (userId, data) => {
     const response = await api.post(
         `/skills/users/${userId}/skill`,
         data
+    );
+    return response.data;
+};
+
+export const updateUserSkill = async (userId, skillId, data) => {
+    const response = await api.put(
+        `/skills/users/${userId}/skills/${skillId}`,
+        data
+    );
+    return response.data;
+};
+
+export const removeSkillFromUser = async (userId, skillId) => {
+    const response = await api.delete(
+        `/skills/users/${userId}/skills/${skillId}`
     );
     return response.data;
 };
