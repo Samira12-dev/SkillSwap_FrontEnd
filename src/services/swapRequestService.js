@@ -50,3 +50,10 @@ export const completeSwapRequest = async (swapId, userId) => {
     );
     return response.data;
 };
+
+
+export const getAllSwapRequest = async(page,size)=>{
+    return api.get("/swaprequests",{
+         params: { page, size }
+         });
+}

@@ -1,33 +1,27 @@
 
+import { useEffect, useState } from "react";
 import "../../App.css";
+import { getAllSwapRequest } from "../../services/swapRequestService";
 
 function AdminSwapRequests() {
-    const requests = [
-        {
-            id: 1,
-            sender: "Adam Smith",
-            receiver: "Sara Ali",
-            offered: "Java",
-            wanted: "React",
-            status: "PENDING"
-        },
-        {
-            id: 2,
-            sender: "John Doe",
-            receiver: "Adam Smith",
-            offered: "English",
-            wanted: "Java",
-            status: "ACCEPTED"
-        },
-        {
-            id: 3,
-            sender: "Sara Ali",
-            receiver: "John Doe",
-            offered: "React",
-            wanted: "English",
-            status: "COMPLETED"
+    const [swapRequests, setSwapRequests] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [size, setSize] = useState(10);
+
+    const getRequests = async () => {
+        try {
+            const res = await getAllSwapRequest(currentPage, size);
+            setSwapRequests(res.data.content);
+            setTotalPages(res.data.totalPages);
+        } catch (error) {
+            console.log(error);
         }
-    ];
+    }
+
+    useEffect(() => {
+        getRequests();
+    }, [currentPage, size])
 
     return (
         <div className="admin-page">
@@ -53,22 +47,46 @@ function AdminSwapRequests() {
                     </thead>
 
                     <tbody>
-                        {requests.map((request) => (
+                        {swapRequests.map((request) => (
                             <tr key={request.id}>
-                                <td>{request.sender}</td>
-                                <td>{request.receiver}</td>
-                                <td>{request.offered}</td>
-                                <td>{request.wanted}</td>
+                                <td>{request.senderName}</td>
+                                <td>{request.receiverName}</td>
+                                <td>{request.skillOfferedName}</td>
+                                <td>{request.skillWantedName}</td>
+                                
                                 <td>
-                                    <span className="admin-status">
-                                        {request.status}
+                                    <span className={`admin-status ${request.swapStatus.toLowerCase()}`}>
+                                        {request.swapStatus}
                                     </span>
                                 </td>
+                                
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
+
+            <div className="pagination">
+                <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 0}
+                >
+                    Previous
+                </button>
+
+                <span>
+                    Page {currentPage + 1} of {totalPages}
+                </span>
+
+                <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage + 1 >= totalPages}
+                >
+                    Next
+                </button>
+            </div>
+
         </div>
     );
 }

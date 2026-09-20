@@ -6894,3 +6894,45 @@ body {
         gap: 10px;
     }
 }
+
+
+/*====================SWAP REQUEST STATUS BADGE=======================*/
+
+.admin-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* PENDING */
+.admin-status.pending {
+    background-color: #fef3c7;
+    color: #ca8a04;
+}
+
+/* ACCEPTED */
+.admin-status.accepted {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+/* REJECTED */
+.admin-status.rejected {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+/* COMPLETED */
+.admin-status.completed {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+/* CANCELLED */
+.admin-status.cancelled {
+    background-color: #f3f4f6;
+    color: rgba(255, 217, 0, 0.813);
+}
+
