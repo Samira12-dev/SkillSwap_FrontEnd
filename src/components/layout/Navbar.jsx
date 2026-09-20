@@ -13,19 +13,19 @@ function Navbar() {
             </div>
 
             <div className="navbar-right">
-                <div className="search-box">
+                {/* <div className="search-box">
                     <span className="search-icon">⌕</span>
 
                     <input
                         type="text"
                         placeholder="Search skills..."
                     />
-                </div>
+                </div> */}
 
-                <button className="icon-btn">
+                {/* <button className="icon-btn">
                     <MdNotifications />
                     <span className="notification-dot"></span>
-                </button>
+                </button> */}
 
                 <div className="profile-avatar">
                     <img
