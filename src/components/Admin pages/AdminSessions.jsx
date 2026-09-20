@@ -1,42 +1,40 @@
 
+import { useEffect, useState } from "react";
 import "../../App.css";
+import { getAllSessions } from "../../services/sessionService";
 
 function AdminSessions() {
-    const sessions = [
-        {
-            id: 1,
-            user1: "Adam Smith",
-            user2: "Sara Ali",
-            date: "20/09/2026",
-            mode: "ONLINE",
-            status: "CONFIRMED"
-        },
-        {
-            id: 2,
-            user1: "John Doe",
-            user2: "Adam Smith",
-            date: "22/09/2026",
-            mode: "ONLINE",
-            status: "PROPOSED"
-        },
-        {
-            id: 3,
-            user1: "Sara Ali",
-            user2: "John Doe",
-            date: "25/09/2026",
-            mode: "OFFLINE",
-            status: "COMPLETED"
+
+    const [sessions, setSessions] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [size] = useState(10);
+
+    const getSessions = async () => {
+        try {
+            const res = await getAllSessions(currentPage, size);
+
+            setSessions(res.data.content);
+            setTotalPages(res.data.totalPages);
+        } catch (error) {
+            console.log(error);
         }
-    ];
+    };
+
+    useEffect(() => {
+        getSessions();
+    }, [currentPage, size]);
 
     return (
         <div className="admin-page">
+
             <div className="admin-header">
                 <h2>Sessions</h2>
                 <p>Monitor skill exchange sessions.</p>
             </div>
 
             <div className="admin-table-card">
+
                 <div className="admin-table-header">
                     <h3>All Sessions</h3>
                 </div>
@@ -44,31 +42,57 @@ function AdminSessions() {
                 <table className="admin-table">
                     <thead>
                         <tr>
-                            <th>User 1</th>
-                            <th>User 2</th>
                             <th>Date</th>
+                            <th>Duration</th>
                             <th>Mode</th>
                             <th>Status</th>
+                            <th>Conversation</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {sessions.map((session) => (
                             <tr key={session.id}>
-                                <td>{session.user1}</td>
-                                <td>{session.user2}</td>
                                 <td>{session.date}</td>
+                                <td>{session.duration} min</td>
                                 <td>{session.mode}</td>
                                 <td>
-                                    <span className="admin-status">
+                                    <span
+                                        className={`admin-status ${session.status.toLowerCase()}`}
+                                    >
                                         {session.status}
                                     </span>
                                 </td>
+                                <td>{session.conversationId}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+
             </div>
+
+            <div className="pagination">
+
+                <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 0}
+                >
+                    Previous
+                </button>
+
+                <span>
+                    Page {currentPage + 1} of {totalPages}
+                </span>
+
+                <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage + 1 >= totalPages}
+                >
+                    Next
+                </button>
+
+            </div>
+
         </div>
     );
 }

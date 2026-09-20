@@ -20,3 +20,11 @@ export const getUnreadNotificationCount = async (userId) => {
     );
     return response.data;
 };
+
+
+export const getAllNotifications = async (page, size) => {
+    return api.get("/notifications", {
+        params: { page, size }
+    });
+};
+

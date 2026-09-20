@@ -28,3 +28,11 @@ export const getSessionById = async (sessionId) => {
     const response = await api.get(`/sessions/${sessionId}`);
     return response.data;
 };
+
+
+
+export const getAllSessions = async (page, size) => {
+    return api.get("/sessions", {
+        params: { page, size }
+    });
+};
