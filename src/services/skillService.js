@@ -7,10 +7,6 @@ export const getUserSkills = async (userId, page, size) => {
     return response.data;
 };
 
-export const getAllSkills = async () => {
-    const response = await api.get("/skills");
-    return response.data;
-};
 
 export const addSkillToUser = async (userId, data) => {
     const response = await api.post(
@@ -55,5 +51,43 @@ export const getAllSkillsToAdmin = async (page, size) => {
     });
 };
 
+/* ADMIN SKILLS */
 
-    
+export const createSkill = async (data) => {
+    const response = await api.post("/skills", data);
+    return response.data;
+};
+
+export const updateSkill = async (skillId, data) => {
+    const response = await api.put(`/skills/${skillId}`, data);
+    return response.data;
+};
+
+export const deleteSkill = async (skillId) => {
+    const response = await api.delete(`/skills/${skillId}`);
+    return response.data;
+};
+
+
+export const getAllSkills = async (page = 0, size = 10) => {
+    const response = await api.get("/skills", {
+        params: {
+            page,
+            size
+        }
+    });
+
+    return response.data;
+};
+
+
+export const getAllSkillsForSearch = async () => {
+    const response = await api.get("/skills", {
+        params: {
+            page: 0,
+            size: 1000
+        }
+    });
+
+    return response.data.content;
+};

@@ -30,7 +30,6 @@ function AdminSessions() {
 
             <div className="admin-header">
                 <h2>Sessions</h2>
-                <p>Monitor skill exchange sessions.</p>
             </div>
 
             <div className="admin-table-card">

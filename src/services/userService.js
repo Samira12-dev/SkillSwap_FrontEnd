@@ -15,3 +15,7 @@ return api.get("/users", {
     params: { page, size }
 });
 };
+
+export const deleteUser = async (userId) => {
+    return api.delete(`/users/${userId}`);
+};

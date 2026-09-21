@@ -27,7 +27,7 @@ function AdminSwapRequests() {
         <div className="admin-page">
             <div className="admin-header">
                 <h2>Swap Requests</h2>
-                <p>Monitor skill exchange requests.</p>
+             
             </div>
 
             <div className="admin-table-card">
