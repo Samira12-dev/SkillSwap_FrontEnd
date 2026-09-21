@@ -119,7 +119,14 @@ function Sidebar() {
                                     <span>Notifications</span>
                                 </NavLink>
                             </li>
-
+                       
+                            <li>
+                                <NavLink to="/admin/profile">
+                                    <MdPerson />
+                                    <span>My Profile</span>
+                                </NavLink>
+                            </li>
+                         
 
                         </>
                     ) : (
