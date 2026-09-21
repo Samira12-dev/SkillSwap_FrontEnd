@@ -30,10 +30,10 @@ function DiscoverSkills() {
         getDiscoverSkills(currentPage, size)
             .then((data) => {
                 setSkills(data.content || []);
-                setTotalPages(data.totalPages);
+                setTotalPages(data.totalPages || 0);
             })
             .catch((error) => {
-                console.error( error);
+                console.error(error);
             });
     }, [currentPage]);
 
@@ -54,15 +54,27 @@ function DiscoverSkills() {
     }, [user]);
 
     const categories = [
-        ...new Set(skills.map((skill) => skill.category))
+        ...new Set(
+            skills
+                .map((skill) => skill.category)
+                .filter(Boolean)
+        )
     ];
 
     const levels = [
-        ...new Set(skills.map((skill) => skill.level))
+        ...new Set(
+            skills
+                .map((skill) => skill.level)
+                .filter(Boolean)
+        )
     ];
 
     const types = [
-        ...new Set(skills.map((skill) => skill.type))
+        ...new Set(
+            skills
+                .map((skill) => skill.type)
+                .filter(Boolean)
+        )
     ];
 
     const filteredSkills = skills.filter((skill) => {
@@ -82,7 +94,30 @@ function DiscoverSkills() {
         const typeMatch =
             type === "" || skill.type === type;
 
-        return searchMatch && categoryMatch && levelMatch && typeMatch;
+        return (
+            searchMatch &&
+            categoryMatch &&
+            levelMatch &&
+            typeMatch
+        );
+    });
+
+    const groupedSkills = [];
+
+    filteredSkills.forEach((skill) => {
+        const existingUser = groupedSkills.find(
+            (user) => user.userId === skill.userId
+        );
+
+        if (existingUser) {
+            existingUser.skills.push(skill);
+        } else {
+            groupedSkills.push({
+                userId: skill.userId,
+                userName: skill.userName,
+                skills: [skill]
+            });
+        }
     });
 
     const handleRequestSwap = (skill) => {
@@ -116,21 +151,24 @@ function DiscoverSkills() {
             handleCloseRequest();
         } catch (error) {
             console.error("REQUEST SWAP ERROR:", error);
-            alert(" send swap request is failed");
+            alert("Send swap request failed");
         }
     };
 
     return (
         <div className="discover-page">
+
             <div className="discover-header">
                 <h2>Discover Skills</h2>
+
                 <p>
-                    Find people with skills you want to learn and connect
-                    for a swap.
+                    Find people with skills you want to learn and
+                    connect for a swap.
                 </p>
             </div>
 
             <div className="filter-bar-card">
+
                 <div className="discover-search">
                     <input
                         type="text"
@@ -141,11 +179,14 @@ function DiscoverSkills() {
                 </div>
 
                 <div className="discover-filters">
+
                     <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                     >
-                        <option value="">All Categories</option>
+                        <option value="">
+                            All Categories
+                        </option>
 
                         {categories.map((item) => (
                             <option key={item} value={item}>
@@ -158,7 +199,9 @@ function DiscoverSkills() {
                         value={level}
                         onChange={(e) => setLevel(e.target.value)}
                     >
-                        <option value="">All Levels</option>
+                        <option value="">
+                            All Levels
+                        </option>
 
                         {levels.map((item) => (
                             <option key={item} value={item}>
@@ -171,7 +214,9 @@ function DiscoverSkills() {
                         value={type}
                         onChange={(e) => setType(e.target.value)}
                     >
-                        <option value="">All Types</option>
+                        <option value="">
+                            All Types
+                        </option>
 
                         {types.map((item) => (
                             <option key={item} value={item}>
@@ -179,17 +224,21 @@ function DiscoverSkills() {
                             </option>
                         ))}
                     </select>
+
                 </div>
             </div>
 
             <SkillList
-                skills={filteredSkills}
+                users={groupedSkills}
                 onRequestSwap={handleRequestSwap}
             />
 
             <div className="pagination">
+
                 <button
-                    onClick={() => setCurrentPage(currentPage - 1)}
+                    onClick={() =>
+                        setCurrentPage(currentPage - 1)
+                    }
                     disabled={currentPage === 0}
                 >
                     Previous
@@ -200,31 +249,46 @@ function DiscoverSkills() {
                 </span>
 
                 <button
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage + 1 >= totalPages}
+                    onClick={() =>
+                        setCurrentPage(currentPage + 1)
+                    }
+                    disabled={
+                        currentPage + 1 >= totalPages
+                    }
                 >
                     Next
                 </button>
+
             </div>
 
             {selectedSkill && (
                 <div className="request-modal-overlay">
+
                     <div className="request-modal">
+
                         <h3>Request Skill Swap</h3>
 
                         <p>
                             Requesting{" "}
-                            <strong>{selectedSkill.skillName}</strong> from{" "}
-                            <strong>{selectedSkill.userName}</strong>
+                            <strong>
+                                {selectedSkill.skillName}
+                            </strong>{" "}
+                            from{" "}
+                            <strong>
+                                {selectedSkill.userName}
+                            </strong>
                         </p>
 
                         <form onSubmit={handleSubmitRequest}>
+
                             <label>Your Skill</label>
 
                             <select
                                 value={selectedOfferedSkill}
                                 onChange={(e) =>
-                                    setSelectedOfferedSkill(e.target.value)
+                                    setSelectedOfferedSkill(
+                                        e.target.value
+                                    )
                                 }
                                 required
                             >
@@ -246,12 +310,15 @@ function DiscoverSkills() {
 
                             <textarea
                                 value={message}
-                                onChange={(e) => setMessage(e.target.value)}
+                                onChange={(e) =>
+                                    setMessage(e.target.value)
+                                }
                                 placeholder="Write a message..."
                                 required
                             />
 
                             <div className="request-modal-actions">
+
                                 <button
                                     type="button"
                                     onClick={handleCloseRequest}
@@ -262,14 +329,18 @@ function DiscoverSkills() {
                                 <button type="submit">
                                     Send Request
                                 </button>
+
                             </div>
+
                         </form>
+
                     </div>
+
                 </div>
             )}
+
         </div>
     );
 }
 
 export default DiscoverSkills;
-

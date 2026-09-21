@@ -1,56 +1,53 @@
-import { Link } from "react-router-dom";
-import "../../App.css";
 
-function SkillCard({ skill, onRequestSwap }) {
+function SkillCard({ user, onRequestSwap }) {
     return (
-        <div className="discover-card">
-            <div className="user-card-header">
-                <div className="user-main-info">
-                    <div className="avatar-large">
-                        {skill.userName?.charAt(0)}
-                    </div>
+        <div className="skill-card">
 
-                    <div>
-                        <h3>{skill.userName}</h3>
+            <div className="skill-card-header">
+                <div className="skill-avatar">
+                    {user.userName?.charAt(0)}
+                </div>
 
-                        <p className="location">
-                            {skill.category}
-                        </p>
-                    </div>
+                <div>
+                    <h3>{user.userName}</h3>
+                    <p>{user.skills.length} skills</p>
                 </div>
             </div>
 
-            <div className="skills-section">
-                <span className="section-label">
-                    {skill.type === "OFFER" ? "OFFERING" : "WANTS TO LEARN"}
-                </span>
+            <div className="skill-card-list">
 
-                <div className="skill-item">
-                    <span className="skill-name">
-                        {skill.skillName}
-                    </span>
+                {user.skills.map((skill) => (
+                    <div
+                        className="skill-item"
+                        key={skill.id}
+                    >
+                        <div className="skill-item-info">
+                            <strong>
+                                {skill.skillName}
+                            </strong>
 
-                    <span className="tag-pill green">
-                        {skill.level}
-                    </span>
-                </div>
+                            <p>
+                                {skill.category}
+                            </p>
+
+                            <span className="skill-level">
+                                {skill.level}
+                            </span>
+                        </div>
+
+                        <button
+                            className="request-skill-button"
+                            onClick={() =>
+                                onRequestSwap(skill)
+                            }
+                        >
+                            Request Swap
+                        </button>
+                    </div>
+                ))}
+
             </div>
 
-            <div className="discover-card-actions">
-                <Link
-                    to={`/profile/${skill.userId}`}
-                    className="link-btn"
-                >
-                    View Profile
-                </Link>
-
-                <button
-                    className="btn-sm purple"
-                    onClick={() => onRequestSwap(skill)}
-                >
-                    Request Swap
-                </button>
-            </div>
         </div>
     );
 }

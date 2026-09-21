@@ -141,7 +141,7 @@ function EditProfile(){
 
                             <div className="edit-photo-box">
                                 <img
-                                    src={formData.photo||"https://i.pravatar.cc/150?img=12"}
+                                    src={formData.photo||""}
                                     alt="Profile"
                                 />
 

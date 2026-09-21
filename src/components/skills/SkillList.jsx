@@ -1,22 +1,21 @@
 
 import SkillCard from "./SkillCard";
-import "../../App.css";
 
-function SkillList({ skills, onRequestSwap }) {
-    if (!skills || skills.length === 0) {
+function SkillList({ users, onRequestSwap }) {
+    if (!users || users.length === 0) {
         return (
-            <div className="skill-list-empty">
+            <div className="empty-state">
                 <p>No skills found.</p>
             </div>
         );
     }
 
     return (
-        <div className="discover-grid">
-            {skills.map((skill, index) => (
+        <div className="skills-grid">
+            {users.map((user) => (
                 <SkillCard
-                    key={`${skill.userId}-${skill.skillName}-${skill.type}-${index}`}
-                    skill={skill}
+                    key={user.userId}
+                    user={user}
                     onRequestSwap={onRequestSwap}
                 />
             ))}
