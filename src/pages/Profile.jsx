@@ -7,7 +7,6 @@ import "../App.css";
 
 function MyProfile() {
     const { user } = useContext(AuthContext);
- console.log("USER:", user);
     return (
         <div className="profile-page">
             <div className="profile-header">
@@ -16,7 +15,7 @@ function MyProfile() {
                     <p>Manage your public profile and personal information</p>
                 </div>
 
-                <Link to="/profile/edit" className="btn-edit-profile">
+                <Link to={user?.role === "ADMIN" ? "/admin/profile/edit" : "/profile/edit"} className="btn-edit-profile">
                     <MdEdit />
                     Edit Profile
                 </Link>
@@ -61,7 +60,7 @@ function MyProfile() {
                         <div className="card-header">
                             <h3>My Skills</h3>
 
-                            <Link to="/skills" className="link-btn">
+                            <Link to={user?.role === "ADMIN" ? "/admin/skills" : "/skills"}  className="link-btn"  >
                                 Manage
                             </Link>
                         </div>

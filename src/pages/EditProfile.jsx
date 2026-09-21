@@ -67,7 +67,6 @@ function EditProfile(){
                     <h2>Edit Profile</h2>
                     <p>Update your personal information and public profile.</p>
                 </div>
-                <Link to={profilePath} className="cancel-btn">Cancel</Link>
             </div>
 
             <form className="edit-profile-form" onSubmit={handleSubmit}>
