@@ -79,7 +79,6 @@ function App() {
                 >
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/profile" element={<Profile />} />
-                     <Route path="/profile/edit" element={<EditProfile />} />
                     <Route path="/admin/profile/edit" element={<EditProfile />} />
                     <Route path="/admin/skills" element={<AdminSkills />} />
                     <Route path="/admin/swap-requests" element={<AdminSwapRequests />} />
