@@ -43,10 +43,8 @@ function UserDashboard() {
 
         getReceivedRequests(user.id)
             .then((requests) => {
-                console.log("RECEIVED REQUESTS:", requests);
-
                 const pending = requests.content.filter(
-                    (request) => request.status === "PENDING"
+                    (request) => request.swapStatus === "PENDING"
                 );
 
                 setPendingRequests(pending);
@@ -63,8 +61,6 @@ function UserDashboard() {
 
         getMySessions(user.id)
             .then((sessions) => {
-                console.log("MY SESSIONS:", sessions);
-
                 const upcoming = sessions.content.filter(
                     (session) => new Date(session.date) > new Date()
                 );
@@ -181,8 +177,7 @@ function UserDashboard() {
                                     <div className="user-profile">
                                         <div>
                                             <h4>
-                                                {request.sender?.firstName}{" "}
-                                                {request.sender?.lastName}
+                                                {request.senderName}
                                             </h4>
                                             <span className="location">
                                                 Pending skill exchange request

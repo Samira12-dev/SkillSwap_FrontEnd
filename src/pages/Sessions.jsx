@@ -80,6 +80,31 @@ function Sessions() {
         displayedSessions = cancelledSessions;
     }
 
+    const conversationMap = new Map(
+        conversations.map((conversation) => [
+            conversation.id,
+            conversation
+        ])
+    );
+
+    const enrichedSessions = displayedSessions.map((session) => {
+        const conversation = conversationMap.get(
+            session.conversationId
+        );
+
+        if (!conversation) {
+            return session;
+        }
+
+        return {
+            ...session,
+            userName:
+                conversation.senderId === user?.id
+                    ? conversation.receiverName
+                    : conversation.senderName
+        };
+    });
+
     const handleSchedule = async (data) => {
         try {
             const session = await createSession(data, user.id);
@@ -254,7 +279,7 @@ function Sessions() {
                 </div>
 
                 <SessionList
-                    sessions={displayedSessions}
+                    sessions={enrichedSessions}
                     onAccept={handleAccept}
                     onCancel={handleCancel}
                     onComplete={handleComplete}

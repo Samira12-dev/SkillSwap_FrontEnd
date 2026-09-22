@@ -1,5 +1,7 @@
 
-import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { setupNavigate } from "./services/api";
 import "./App.css";
 
 import Register from "./pages/auth/Register";
@@ -35,6 +37,12 @@ import AdminUsers from "./components/Admin pages/AdminUsers";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 
 function App() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setupNavigate(navigate);
+    }, [navigate]);
+
     return (
         <Routes>
 

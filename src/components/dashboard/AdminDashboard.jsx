@@ -7,9 +7,9 @@ function AdminDashboard() {
     const [stats, setStats] = useState({
         totalUsers: 0,
         totalSkills: 0,
-        totalSwapRequest: 0,
-        activeSession: 0,
-        completeSession: 0
+        totalSwapRequests: 0,
+        activeSessions: 0,
+        completedSessions: 0
     });
 
     useEffect(() => {
@@ -55,7 +55,7 @@ function AdminDashboard() {
                 <div className="admin-stat-card">
                     <div className="admin-stat-info">
                         <span className="admin-stat-label">TOTAL SWAP REQUESTS</span>
-                        <strong className="admin-stat-value">{stats.totalSwapRequest}</strong>
+                        <strong className="admin-stat-value">{stats.totalSwapRequests}</strong>
                     </div>
 
                     <div className="admin-stat-icon yellow">
@@ -66,7 +66,7 @@ function AdminDashboard() {
                 <div className="admin-stat-card">
                     <div className="admin-stat-info">
                         <span className="admin-stat-label">ACTIVE SESSIONS</span>
-                        <strong className="admin-stat-value">{stats.activeSession}</strong>
+                        <strong className="admin-stat-value">{stats.activeSessions}</strong>
                     </div>
 
                     <div className="admin-stat-icon blue">
@@ -77,7 +77,7 @@ function AdminDashboard() {
                 <div className="admin-stat-card">
                     <div className="admin-stat-info">
                         <span className="admin-stat-label">COMPLETED SESSIONS</span>
-                        <strong className="admin-stat-value">{stats.completeSession}</strong>
+                        <strong className="admin-stat-value">{stats.completedSessions}</strong>
                     </div>
 
                     <div className="admin-stat-icon success">
@@ -138,7 +138,7 @@ function AdminDashboard() {
                                 </div>
                             </div>
 
-                            <strong>{stats.totalSwapRequest}</strong>
+                            <strong>{stats.totalSwapRequests}</strong>
                         </div>
 
                         <div className="overview-item">
@@ -152,7 +152,7 @@ function AdminDashboard() {
                                 </div>
                             </div>
 
-                            <strong>{stats.activeSession}</strong>
+                            <strong>{stats.activeSessions}</strong>
                         </div>
 
                         <div className="overview-item">
@@ -166,7 +166,7 @@ function AdminDashboard() {
                                 </div>
                             </div>
 
-                            <strong>{stats.completeSession}</strong>
+                            <strong>{stats.completedSessions}</strong>
                         </div>
 
                     </div>

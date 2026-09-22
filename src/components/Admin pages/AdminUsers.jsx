@@ -7,7 +7,7 @@ import {
     MdClose
 } from "react-icons/md";
 import "../../App.css";
-import { getAllUsers, getUserById } from "../../services/userService";
+import { getAllUsers, getUserById, deleteUser } from "../../services/userService";
 
 function AdminUsers() {
     const [search, setSearch] = useState("");
@@ -42,11 +42,7 @@ function AdminUsers() {
 
     const handleView = async (userId) => {
         try {
-            console.log("USER ID:", userId);
-
             const user = await getUserById(userId);
-
-            console.log("USER DATA:", user);
 
             setSelectedUser(user);
             setShowView(true);
@@ -57,21 +53,19 @@ function AdminUsers() {
     };
 
 
-    const handleDelete = async (userId) => {
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this user?"
-        );
-
-        if (!confirmDelete) {
-            return;
-        }
-
-        console.log("Delete user:", userId);
-    };
-
     const closeView = () => {
         setShowView(false);
         setSelectedUser(null);
+    };
+
+    const handleDelete = async (userId) => {
+        if (!window.confirm("Are you sure you want to delete this user?")) return;
+        try {
+            await deleteUser(userId);
+            getUsers();
+        } catch (error) {
+            window.alert(error.response?.data || "Failed to delete user");
+        }
     };
 
     return (
@@ -145,8 +139,9 @@ function AdminUsers() {
                                         </button>
 
                                         <button
-                                            onClick={() => handleDelete(user.id)}
+                                            disabled={user.role === "ADMIN"}
                                             title="Delete"
+                                            onClick={() => handleDelete(user.id)}
                                         >
                                             <MdDelete />
                                         </button>
