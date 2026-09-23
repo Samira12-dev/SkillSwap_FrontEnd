@@ -1,11 +1,6 @@
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
-import { useContext } from "react";
 
 function SkillCard({ user, onRequestSwap }) {
-    const { user: currentUser } = useContext(AuthContext);
-    const isOwnCard = currentUser?.id === user.userId;
-
     return (
         <div className="skill-card">
 
@@ -19,14 +14,12 @@ function SkillCard({ user, onRequestSwap }) {
                     <p>{user.skills.length} skills</p>
                 </div>
 
-                {!isOwnCard && (
-                    <Link
-                        to={`/profile/${user.userId}`}
-                        className="view-profile-button"
-                    >
-                        View Profile
-                    </Link>
-                )}
+                <Link
+                    to={`/profile/${user.userId}`}
+                    className="view-profile-button"
+                >
+                    View Profile
+                </Link>
             </div>
 
             <div className="skill-card-list">
