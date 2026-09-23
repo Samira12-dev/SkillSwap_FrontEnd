@@ -27,7 +27,7 @@ function AddSkill() {
                 setSkills(data.content || []);
             })
             .catch((error) => {
-                console.error("Error loading skills:", error);
+                console.error(error);
             });
 
     }, []);
@@ -61,7 +61,7 @@ function AddSkill() {
 
         } catch (error) {
 
-            console.error("Error adding skill:", error);
+            console.error(error);
 
         }
     };

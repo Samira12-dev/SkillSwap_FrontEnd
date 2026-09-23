@@ -38,9 +38,9 @@ function UserProfile() {
                 const average = await getAverageRating(userId);
                 setAverageRating(average || 0);
             } catch (error) {
-                console.error("USER PROFILE ERROR:", error);
-                console.error("STATUS:", error.response?.status);
-                console.error("DATA:", error.response?.data);
+                console.error(error);
+                console.error(error.response?.status);
+                console.error(error.response?.data);
             } finally {
                 setLoading(false);
             }

@@ -41,7 +41,7 @@ function Register() {
             await registerUser(data);
             navigate("/login");
         } catch (error) {
-            console.error("Registration failed:", error);
+            console.error(error);
         }
     };
 

@@ -34,7 +34,7 @@ function Sessions() {
                 setSessions(data.content || []);
             })
             .catch((error) => {
-                console.error("Erro in session:", error);
+                console.error(error);
             });
 
         getMyConversations(user.id)
@@ -52,7 +52,7 @@ function Sessions() {
                 setConversations(formattedList);
             })
             .catch((error) => {
-                console.error("eror of conversation:", error);
+                console.error(error);
             });
     }, [user]);
 
@@ -112,7 +112,7 @@ function Sessions() {
             setSessions((prev) => [...prev, session]);
             setShowForm(false);
         } catch (error) {
-            console.error("Error in Create session:", error);
+            console.error(error);
         }
     };
 
@@ -126,7 +126,7 @@ function Sessions() {
                 )
             );
         } catch (error) {
-            console.error("accept error:", error);
+            console.error(error);
         }
     };
 
@@ -140,7 +140,7 @@ function Sessions() {
                 )
             );
         } catch (error) {
-            console.error("CANCEL ERROR:", error);
+            console.error(error);
         }
     };
 
@@ -154,7 +154,7 @@ function Sessions() {
                 )
             );
         } catch (error) {
-            console.error("COMPLETE ERROR:", error);
+            console.error(error);
         }
     };
 

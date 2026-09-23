@@ -23,7 +23,7 @@ function SwapRequests() {
                 const sent = await getSentRequests(user.id);
                 setSentRequests(sent.content || []);
             } catch (error) {
-                console.error("Error loading requests:", error);
+                console.error(error);
             }
             setLoading(false);
         };
@@ -53,7 +53,7 @@ function SwapRequests() {
             )
         );
     } catch (error) {
-        console.error("ACCEPT ERROR:", error);
+        console.error(error);
     }
 };
     const handleReject = async (id) => {
@@ -61,7 +61,7 @@ function SwapRequests() {
             const request = await rejectSwapRequest(id, user.id);
             setReceivedRequests(receivedRequests.map(item => item.id === id ? request : item));
         } catch (error) {
-            console.error("Reject error:", error);
+            console.error(error);
         }
     };
 
@@ -73,7 +73,7 @@ function SwapRequests() {
                 prev.filter((request) => request.id !== id)
             );
         } catch (error) {
-            console.error( error);
+            console.error(error);
         }
     };
 

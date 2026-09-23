@@ -51,7 +51,7 @@ function EditProfile(){
             updateUser(updated);
             navigate(user.role==="ADMIN"?"/admin/profile":"/profile");
         }catch(err){
-            console.error("UPDATE PROFILE ERROR:",err);
+            console.error(err);
             setError("Could not update your profile. Please try again.");
         }finally{
             setSaving(false);

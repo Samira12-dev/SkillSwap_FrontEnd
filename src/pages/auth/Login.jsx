@@ -36,7 +36,7 @@ function Login() {
 
             navigate(decodedToken.role === "ADMIN" ? "/admin" : "/dashboard");
         } catch (error) {
-            console.error("Login error:", error);
+            console.error(error);
         }
     };
 

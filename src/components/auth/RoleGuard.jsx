@@ -6,10 +6,6 @@ import { AuthContext } from "../../context/AuthContext";
 function RoleGuard({ roles, children }) {
     const { user } = useContext(AuthContext);
 
-    console.log("USER:", user);
-    console.log("USER ROLE:", user?.role);
-    console.log("ALLOWED ROLES:", roles);
-
     if (!roles.includes(user?.role)) {
         return <Navigate to="/access-denied" replace />;
     }

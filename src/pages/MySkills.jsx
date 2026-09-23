@@ -29,7 +29,7 @@ function MySkills() {
                 setSkills(data.content || []);
             })
             .catch((error) => {
-                console.error("Error loading skills:", error);
+                console.error(error);
             });
     };
 
@@ -65,7 +65,7 @@ function MySkills() {
             setEditingSkillId(null);
             loadSkills();
         } catch (error) {
-            console.error("Error updating skill:", error);
+            console.error(error);
         }
     };
 
@@ -74,7 +74,7 @@ function MySkills() {
             await removeSkillFromUser(user.id, skill.skillId);
             setSkills((prev) => prev.filter((item) => item.id !== skill.id));
         } catch (error) {
-            console.error("Error deleting skill:", error);
+            console.error(error);
         }
     };
 

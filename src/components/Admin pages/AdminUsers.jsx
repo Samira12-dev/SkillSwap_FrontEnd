@@ -48,7 +48,7 @@ function AdminUsers() {
             setShowView(true);
 
         } catch (error) {
-            console.log("VIEW USER ERROR:", error);
+            console.log(error);
         }
     };
 

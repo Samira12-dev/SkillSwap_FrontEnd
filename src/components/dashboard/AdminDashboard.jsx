@@ -15,7 +15,7 @@ function AdminDashboard() {
     useEffect(() => {
         getAdminDashboard()
             .then((data) => setStats(data))
-            .catch((error) => console.error("ADMIN DASHBOARD ERROR:", error));
+            .catch((error) => console.error(error));
     }, []);
 
     return (

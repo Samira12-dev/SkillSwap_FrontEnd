@@ -27,7 +27,7 @@ function Notifications() {
                 setNotifications(list);
             })
             .catch((error) => {
-                console.error("NOTIFICATIONS ERROR:", error);
+                console.error(error);
             });
     }, [user]);
 
@@ -43,7 +43,7 @@ function Notifications() {
                 )
             );
         } catch (error) {
-            console.error("MARK AS READ ERROR:", error);
+            console.error(error);
         }
     };
 

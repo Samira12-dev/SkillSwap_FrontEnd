@@ -56,7 +56,7 @@ function Messages() {
                     }
                 }
             } catch (error) {
-                console.error("CONVERSATIONS ERROR:", error);
+                console.error(error);
             } finally {
                 setLoading(false);
             }
@@ -111,7 +111,7 @@ function Messages() {
                     );
                 }
             } catch (error) {
-                console.error("MESSAGES ERROR:", error);
+                console.error(error);
             }
         };
 
@@ -161,10 +161,7 @@ function Messages() {
                                 );
                             })
                             .catch((error) => {
-                                console.error(
-                                    "MARK AS READ ERROR:",
-                                    error
-                                );
+                                console.error(error);
                             });
                     }
                 }
@@ -172,11 +169,11 @@ function Messages() {
         };
 
         client.onStompError = (error) => {
-            console.error("WebSocket error:", error);
+            console.error(error);
         };
 
         client.onWebSocketError = (error) => {
-            console.error("WebSocket connection error:", error);
+            console.error(error);
         };
 
         client.activate();

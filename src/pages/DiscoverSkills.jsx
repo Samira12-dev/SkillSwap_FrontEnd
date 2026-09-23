@@ -150,7 +150,7 @@ function DiscoverSkills() {
             alert("Swap request sent successfully");
             handleCloseRequest();
         } catch (error) {
-            console.error("REQUEST SWAP ERROR:", error);
+            console.error(error);
             alert("Send swap request failed");
         }
     };

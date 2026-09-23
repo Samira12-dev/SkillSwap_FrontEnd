@@ -30,7 +30,7 @@ function SessionDetails() {
                 setSession(data);
             })
             .catch((error) => {
-                console.error("SESSION DETAILS ERROR:", error);
+                console.error(error);
             });
     }, [sessionId]);
 
@@ -47,7 +47,7 @@ function SessionDetails() {
                 });
             })
             .catch((error) => {
-                console.error("CONVERSATION ERROR:", error);
+                console.error(error);
             });
     }, [session, user]);
 
@@ -62,7 +62,7 @@ function SessionDetails() {
             setShowReviewForm(false);
             setReviewSubmitted(true);
         } catch (error) {
-            console.error("CREATE REVIEW ERROR:", error);
+            console.error(error);
         }
     };
 
