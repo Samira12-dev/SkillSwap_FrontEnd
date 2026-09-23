@@ -5,20 +5,18 @@ function SkillCard({ user, onRequestSwap }) {
         <div className="skill-card">
 
             <div className="skill-card-header">
-                <div className="skill-avatar">
-                    {user.userName?.charAt(0)}
-                </div>
-
-                <div>
-                    <h3>{user.userName}</h3>
-                    <p>{user.skills.length} skills</p>
-                </div>
-
                 <Link
+                    className="skill-card-profile-link"
                     to={`/profile/${user.userId}`}
-                    className="view-profile-button"
                 >
-                    View Profile
+                    <div className="skill-avatar">
+                        {user.userName?.charAt(0)}
+                    </div>
+
+                    <div>
+                        <h3>{user.userName}</h3>
+                        <p>{user.skills.length} skills</p>
+                    </div>
                 </Link>
             </div>
 
