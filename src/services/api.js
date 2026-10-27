@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const configuredBaseUrl = import.meta.env.VITE_API_URL?.trim();
+const baseURL = configuredBaseUrl
+    ? configuredBaseUrl.replace(/\/+$/, "")
+    : "/api";
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL,
     headers: {
         "Content-Type": "application/json"
     }
@@ -30,6 +35,8 @@ api.interceptors.response.use(
 
     async (error) => {
         if (error.response) {
+            const requestUrl = error.config?.url || "";
+            const isAuthRequest = requestUrl.startsWith("/auth/");
 
             switch (error.response.status) {
 
@@ -57,7 +64,7 @@ api.interceptors.response.use(
                 case 404:
                     console.log("Resource not found");
 
-                    if (navigate) {
+                    if (!isAuthRequest && navigate) {
                         navigate("/not-found");
                     }
                     break;

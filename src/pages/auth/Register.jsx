@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -5,6 +6,8 @@ import { MdSwapHoriz, MdArrowBack, MdArrowForward } from "react-icons/md";
 import * as yup from "yup";
 import "../../App.css";
 import { register as registerUser } from "../../services/authService";
+import { useToast } from "../../context/ToastContext";
+import { getErrorMessage } from "../../utils/format";
 
 const schema = yup.object({
     firstName: yup.string().required("First name is required"),
@@ -18,6 +21,9 @@ const schema = yup.object({
 
 function Register() {
     const navigate = useNavigate();
+    const toast = useToast();
+    const [formError, setFormError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     const {
         register,
@@ -37,11 +43,23 @@ function Register() {
     });
 
     const onSubmit = async (data) => {
+        setFormError("");
+        setSubmitting(true);
+
         try {
             await registerUser(data);
+            toast.success("Account created. You can sign in now.");
             navigate("/login");
         } catch (error) {
-            console.error(error);
+            const message = getErrorMessage(
+                error,
+                "We could not create your account. Please try again."
+            );
+
+            setFormError(message);
+            toast.error(message);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -192,6 +210,12 @@ function Register() {
                             )}
                         </div>
 
+                        {formError && (
+                            <p className="form-error" role="alert">
+                                {formError}
+                            </p>
+                        )}
+
                         <div className="register-actions">
                             <Link
                                 to="/"
@@ -204,8 +228,9 @@ function Register() {
                             <button
                                 type="submit"
                                 className="register-btn"
+                                disabled={submitting}
                             >
-                                Create account
+                                {submitting ? "Creating account…" : "Create account"}
                                 <MdArrowForward />
                             </button>
                         </div>

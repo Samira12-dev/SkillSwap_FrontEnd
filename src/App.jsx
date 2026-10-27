@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { setupNavigate } from "./services/api";
 import "./App.css";
+import "./styles/design-system.css";
 
 import Register from "./pages/auth/Register";
 import Home from "./pages/Home";

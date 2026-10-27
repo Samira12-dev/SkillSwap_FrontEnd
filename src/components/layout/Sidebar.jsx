@@ -1,229 +1,208 @@
-import { useContext, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import {
-    MdDashboard,
-    MdPeople,
-    MdEmojiEvents,
-    MdSwapHoriz,
-    MdEvent,
-    MdNotifications,
-    MdSettings,
-    MdPerson,
-    MdSearch,
-    MdMessage,
-    MdLogout
-} from "react-icons/md";
-import { TbArrowsExchange } from "react-icons/tb";
+    ArrowLeftRight,
+    Bell,
+    CalendarDays,
+    Compass,
+    LayoutDashboard,
+    LogOut,
+    MessageSquare,
+    Sparkles,
+    UserRound,
+    Users,
+    X
+} from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import { getUserDashboard } from "../../services/dashboardService";
+import Avatar from "../ui/Avatar";
 import "../../App.css";
 
-function Sidebar() {
-    const {
-        user,
-        logout,
-        unreadMessages,
-        setUnreadMessages
-    } = useContext(AuthContext);
-
-
-
+export default function Sidebar({ open, onClose }) {
+    const { user, logout, unreadMessages, setUnreadMessages } = useContext(AuthContext);
+    const [dashboard, setDashboard] = useState(null);
+    const location = useLocation();
 
     useEffect(() => {
-        if (!user?.id || user.role !== "USER") return;
+        if (!user?.id || user.role !== "USER") return undefined;
 
-        const loadUnreadMessages = () => {
-            getUserDashboard(user.id)
-                .then((data) => {
-                    setUnreadMessages(data.unreadMessages || 0);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+        let cancelled = false;
+
+        const loadSummary = async () => {
+            try {
+                const data = await getUserDashboard(user.id);
+
+                if (!cancelled) {
+                    setDashboard(data);
+                    setUnreadMessages(data?.unreadMessages || 0);
+                }
+            } catch {
+                if (!cancelled) {
+                    setDashboard(null);
+                }
+            }
         };
 
-        loadUnreadMessages();
+        loadSummary();
+        const interval = window.setInterval(loadSummary, 20000);
 
-        const interval = setInterval(() => {
-            loadUnreadMessages();
-        }, 3000);
+        return () => {
+            cancelled = true;
+            window.clearInterval(interval);
+        };
+    }, [location.pathname, setUnreadMessages, user]);
 
-        return () => clearInterval(interval);
-    }, [user, setUnreadMessages]);
+    if (!user) return null;
 
-
-
-
-
-    if (!user) {
-        return null;
-    }
-
-    const dashboardPath = user.role === "ADMIN" ? "/admin" : "/dashboard";
+    const isAdmin = user.role === "ADMIN";
+    const dashboardPath = isAdmin ? "/admin" : "/dashboard";
+    const notificationCount = Number(dashboard?.notifications) || 0;
+    const pendingCount = Number(dashboard?.pendingRequests) || 0;
 
     return (
-        <aside className="sidebar">
-            <div className="sidebar-header">
-                <div className="logo">
-                    <span className="logo-icon">
-                        <TbArrowsExchange />
-                    </span>
-                    <span className="logo-text">
-                        SkillSwap
-                    </span>
+        <aside className={`sidebar ${open ? "is-open" : ""}`} aria-label="Main sidebar">
+            <div>
+                <div className="sidebar-header">
+                    <div className="logo">
+                        <span className="logo-icon" aria-hidden="true">
+                            <ArrowLeftRight size={18} />
+                        </span>
+                        <span className="logo-text">SkillSwap</span>
+                    </div>
+                    <button
+                        type="button"
+                        className="sidebar-close"
+                        onClick={onClose}
+                        aria-label="Close navigation"
+                    >
+                        <X size={17} />
+                    </button>
                 </div>
+
+                <nav className="sidebar-menu">
+                    <p className="sidebar-section-label">Workspace</p>
+                    <ul>
+                        <li>
+                            <NavLink to={dashboardPath} end onClick={onClose}>
+                                <LayoutDashboard />
+                                <span>Dashboard</span>
+                            </NavLink>
+                        </li>
+
+                        {isAdmin ? (
+                            <>
+                                <li>
+                                    <NavLink to="/admin/users" onClick={onClose}>
+                                        <Users />
+                                        <span>Users</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/admin/skills" onClick={onClose}>
+                                        <Sparkles />
+                                        <span>Skills</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/admin/swap-requests" onClick={onClose}>
+                                        <ArrowLeftRight />
+                                        <span>Swap requests</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/admin/sessions" onClick={onClose}>
+                                        <CalendarDays />
+                                        <span>Sessions</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/admin/notifications" onClick={onClose}>
+                                        <Bell />
+                                        <span>Notifications</span>
+                                    </NavLink>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>
+                                    <NavLink to="/profile" onClick={onClose}>
+                                        <UserRound />
+                                        <span>My profile</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/skills" onClick={onClose}>
+                                        <Sparkles />
+                                        <span>My skills</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/discover" onClick={onClose}>
+                                        <Compass />
+                                        <span>Discover skills</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/swap-requests" onClick={onClose}>
+                                        <ArrowLeftRight />
+                                        <span>Swap requests</span>
+                                        {pendingCount > 0 && (
+                                            <span className="badge" aria-label={`${pendingCount} pending requests`}>
+                                                {pendingCount}
+                                            </span>
+                                        )}
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/sessions" onClick={onClose}>
+                                        <CalendarDays />
+                                        <span>Sessions</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/messages" onClick={onClose}>
+                                        <MessageSquare />
+                                        <span>Messages</span>
+                                        {unreadMessages > 0 && (
+                                            <span className="badge" aria-label={`${unreadMessages} unread messages`}>
+                                                {unreadMessages}
+                                            </span>
+                                        )}
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/notifications" onClick={onClose}>
+                                        <Bell />
+                                        <span>Notifications</span>
+                                        {notificationCount > 0 && (
+                                            <span className="badge" aria-label={`${notificationCount} unread notifications`}>
+                                                {notificationCount}
+                                            </span>
+                                        )}
+                                    </NavLink>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                </nav>
             </div>
 
-            <nav className="sidebar-menu">
-                <ul>
-                    <li>
-                        <NavLink to={dashboardPath} end>
-                            <MdDashboard />
-                            <span>Dashboard</span>
-                        </NavLink>
-                    </li>
-
-                    {user.role === "ADMIN" ? (
-                        <>
-                            <li>
-                                <NavLink to="/admin/users">
-                                    <MdPeople />
-                                    <span>Users</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="/admin/skills">
-                                    <MdEmojiEvents />
-                                    <span>Skills</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="/admin/swap-requests">
-                                    <MdSwapHoriz />
-                                    <span>Swap Requests</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="/admin/sessions">
-                                    <MdEvent />
-                                    <span>Sessions</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="/admin/notifications">
-                                    <MdNotifications />
-                                    <span>Notifications</span>
-                                </NavLink>
-                            </li>
-                       
-                            <li>
-                                <NavLink to="/admin/profile">
-                                    <MdPerson />
-                                    <span>My Profile</span>
-                                </NavLink>
-                            </li>
-                         
-
-                        </>
-                    ) : (
-                        <>
-                            <li>
-                                <NavLink to="profile">
-                                    <MdPerson />
-                                    <span>My Profile</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="skills">
-                                    <MdEmojiEvents />
-                                    <span>My Skills</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="discover">
-                                    <MdSearch />
-                                    <span>Discover Skills</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="swap-requests">
-                                    <MdSwapHoriz />
-                                    <span>Swap Requests</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="sessions">
-                                    <MdEvent />
-                                    <span>Sessions</span>
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="messages">
-                                    <MdMessage />
-                                    <span>Messages</span>
-
-                                    {unreadMessages > 0 && (
-                                        <span className="badge">
-                                            {unreadMessages}
-                                        </span>
-                                    )}
-                                </NavLink>
-                            </li>
-
-                            <li>
-                                <NavLink to="notifications">
-                                    <MdNotifications />
-                                    <span>Notifications</span>
-                                </NavLink>
-                            </li>
-                        </>
-                    )}
-                </ul>
-            </nav>
-
             <div className="sidebar-footer">
-                <div className="user-info">
-                    <div className="user-avatar">
-                        {user.photo ? (
-                            <img
-                                src={user.photo}
-                                alt={`${user.firstName} ${user.lastName}`}
-                            />
-                        ) : (
-                            user.firstName?.charAt(0)
-                        )}
-                    </div>
-
+                <div className="sidebar-user">
+                    <Avatar user={user} size="sm" />
                     <div className="user-details">
                         <span className="user-name">
                             {user.firstName} {user.lastName}
                         </span>
-
-                        <span className="user-email">
-                            {user.email}
-                        </span>
+                        <span className="user-email">{user.email}</span>
                     </div>
                 </div>
 
-                <button
-                    className="logout-btn"
-                    onClick={logout}
-                >
-                    <MdLogout />
-                    <span>Logout</span>
+                <button type="button" className="logout-btn" onClick={logout}>
+                    <LogOut size={17} />
+                    <span>Sign out</span>
                 </button>
             </div>
         </aside>
     );
 }
-
-export default Sidebar;

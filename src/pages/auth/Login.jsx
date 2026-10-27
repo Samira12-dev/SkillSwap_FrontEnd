@@ -6,12 +6,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { login } from "../../services/authService";
 import { AuthContext } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
+import { getErrorMessage } from "../../utils/format";
     
 
 function Login() {
     const navigate = useNavigate();
     const { login: authLogin } = useContext(AuthContext);
+    const toast = useToast();
 
+    const [formError, setFormError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -26,6 +31,8 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setFormError("");
+        setSubmitting(true);
 
         try {
             const data = await login(formData);
@@ -34,9 +41,18 @@ function Login() {
 
             const decodedToken = jwtDecode(data.token);
 
+            toast.success("Welcome back.");
             navigate(decodedToken.role === "ADMIN" ? "/admin" : "/dashboard");
         } catch (error) {
-            console.error(error);
+            const message = getErrorMessage(
+                error,
+                "We could not sign you in. Check your email and password."
+            );
+
+            setFormError(message);
+            toast.error(message);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -97,14 +113,20 @@ function Login() {
                             />
                         </div>
 
+                        {formError && (
+                            <p className="form-error" role="alert">
+                                {formError}
+                            </p>
+                        )}
+
                         <div className="login-actions">
                             <Link to="/" className="login-back-btn">
                                 <MdArrowBack />
                                 Back
                             </Link>
 
-                            <button type="submit" className="login-btn">
-                                Login
+                            <button type="submit" className="login-btn" disabled={submitting}>
+                                {submitting ? "Signing in…" : "Login"}
                                 <MdArrowForward />
                             </button>
                         </div>

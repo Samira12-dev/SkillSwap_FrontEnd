@@ -1,299 +1,250 @@
+import {
+    ArrowRight,
+    BadgeCheck,
+    Bell,
+    CalendarDays,
+    Check,
+    Compass,
+    GraduationCap,
+    Handshake,
+    MessageSquare,
+    Search,
+    Sparkles,
+    Star,
+    UserRound
+} from "lucide-react";
+import { Link } from "react-router-dom";
 import "../App.css";
-function Home() {
+
+const steps = [
+    {
+        icon: UserRound,
+        title: "Create your profile",
+        description: "Add the skills you can offer and the skills you want to learn, with the level you are comfortable with."
+    },
+    {
+        icon: Compass,
+        title: "Find a match",
+        description: "Browse real profiles, filter by skill and level, then send an exchange request when someone fits."
+    },
+    {
+        icon: Handshake,
+        title: "Exchange and learn",
+        description: "Chat after acceptance, schedule a session, and review the experience when you are finished."
+    }
+];
+
+const benefits = [
+    {
+        icon: GraduationCap,
+        title: "Offer and wanted skills",
+        description: "Keep a clear list of what you can teach and what you want to learn next."
+    },
+    {
+        icon: Search,
+        title: "Focused discovery",
+        description: "Find people by skill name, exchange type, and level instead of scrolling a generic feed."
+    },
+    {
+        icon: MessageSquare,
+        title: "Real-time conversations",
+        description: "Message your exchange partner in a focused conversation once a request is accepted."
+    },
+    {
+        icon: CalendarDays,
+        title: "Session scheduling",
+        description: "Propose a time and duration, confirm sessions, and keep upcoming exchanges organised."
+    },
+    {
+        icon: Star,
+        title: "Reviews after completion",
+        description: "Build trust through ratings that are only available after a completed session."
+    },
+    {
+        icon: Bell,
+        title: "Useful notifications",
+        description: "Stay aware of requests, sessions, and unread messages without checking every page."
+    }
+];
+
+export default function Home() {
     return (
-        <div className="home">
-            <nav className="navbar">
-                <div className="logo">
-                    <span className="logo-icon">↔</span>
-                    SkillSwap
-                </div>
-                <div className="nav-links">
-                    <a href="#how-it-works">How it works</a>
-                    <a href="#features">Features</a>
-                    <a href="#stories">Stories</a>
-                </div>
-                <div className="nav-buttons">
-                    <a href="/login" className="login-link">Login</a>
-                    <a href="/register" className="start-btn">Get Started</a>
-                </div>
-            </nav>
+        <div className="landing">
+            <section className="landing-hero">
+                <div className="landing-container landing-hero-inner">
+                    <div className="landing-hero-copy">
+                        <span className="landing-badge">
+                            <Sparkles size={14} />
+                            Skill exchange, without the noise
+                        </span>
+                        <h1>
+                            Teach what you know.
+                            <br />
+                            Learn what you <span>love.</span>
+                        </h1>
+                        <p className="landing-subtitle">
+                            SkillSwap connects people who want to trade knowledge
+                            directly. Build your profile, find a partner, and turn
+                            a shared interest into a real learning exchange.
+                        </p>
 
-            <section className="hero">
-                <div className="hero-content">
-                    <p className="small-text">The skill economy for curious minds</p>
-                    <h1>
-                        Learn what
-                        <br />
-                        you love.
-                    </h1>
-                    <p className="hero-description">
-                        SkillSwap connects people who want to exchange
-                        skills — no money involved, just genuine knowledge
-                        shared between real people.
-                    </p>
-                    <a href="/register" className="hero-btn">Start swapping</a>
-                    <div className="trust">
-                        <div className="avatars">
-                            <span>👩</span>
-                            <span>👨</span>
-                            <span>👩</span>
-                            <span>👨</span>
+                        <div className="landing-actions">
+                            <Link to="/register" className="btn btn-primary">
+                                Create free account
+                                <ArrowRight size={17} />
+                            </Link>
+                            <Link to="/login" className="btn btn-secondary">
+                                Sign in
+                            </Link>
                         </div>
+
+                        <div className="landing-trust">
+                            <span><Check size={14} /> Profile-based matching</span>
+                            <span><Check size={14} /> Real-time messaging</span>
+                            <span><Check size={14} /> Session scheduling</span>
+                        </div>
+                    </div>
+
+                    <div className="landing-visual" aria-hidden="true">
+                        <div className="preview-card preview-card-main">
+                            <div className="preview-card-top">
+                                <strong>Your next exchange</strong>
+                                <small>Example</small>
+                            </div>
+
+                            <div className="preview-match">
+                                <span className="preview-match-icon">
+                                    <GraduationCap size={19} />
+                                </span>
+                                <span className="preview-match-copy">
+                                    <strong>Offering: Creative Writing</strong>
+                                    <small>Advanced level</small>
+                                </span>
+                                <span className="tag green">Offer</span>
+                            </div>
+
+                            <div className="preview-match">
+                                <span className="preview-match-icon">
+                                    <Compass size={19} />
+                                </span>
+                                <span className="preview-match-copy">
+                                    <strong>Wanting to learn: Spanish</strong>
+                                    <small>Intermediate level</small>
+                                </span>
+                                <span className="tag blue">Wanted</span>
+                            </div>
+
+                            <div className="preview-card-top" style={{ margin: "18px 0 8px" }}>
+                                <small>Exchange flow</small>
+                                <BadgeCheck size={17} color="#0f9f74" />
+                            </div>
+                            <p className="ui-text-sm ui-muted" style={{ margin: 0 }}>
+                                Request accepted, conversation ready, session ready to schedule.
+                            </p>
+                        </div>
+
+                        <div className="preview-card preview-chat">
+                            <div className="preview-chat-head">
+                                <span />
+                                Conversation
+                            </div>
+                            <div className="preview-bubble">Would Saturday morning work for you?</div>
+                            <div className="preview-bubble is-own">Yes, let&apos;s schedule it.</div>
+                        </div>
+
+                        <div className="preview-card preview-session">
+                            <span className="preview-session-icon">
+                                <CalendarDays size={17} />
+                            </span>
+                            <span>
+                                <strong>Session confirmed</strong>
+                                <small>Online · 60 minutes</small>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="landing-section" id="how-it-works">
+                <div className="landing-container">
+                    <div className="landing-section-head">
+                        <p className="ui-eyebrow">How it works</p>
+                        <h2>A clear path from interest to exchange</h2>
+                        <p>
+                            SkillSwap keeps the process simple: describe what you
+                            know, find someone with a complementary interest, and
+                            arrange the exchange.
+                        </p>
+                    </div>
+
+                    <div className="landing-steps">
+                        {steps.map((step, index) => {
+                            const Icon = step.icon;
+
+                            return (
+                                <article className="landing-step" key={step.title}>
+                                    <span className="landing-step-number">0{index + 1}</span>
+                                    <Icon className="landing-step-icon" size={21} />
+                                    <h3>{step.title}</h3>
+                                    <p>{step.description}</p>
+                                </article>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            <section className="landing-section landing-section--tint" id="benefits">
+                <div className="landing-container">
+                    <div className="landing-section-head">
+                        <p className="ui-eyebrow">Benefits</p>
+                        <h2>Everything needed for a focused exchange</h2>
+                        <p>
+                            Each feature supports the same goal: helping two people
+                            organise a fair, useful skill swap.
+                        </p>
+                    </div>
+
+                    <div className="landing-benefits">
+                        {benefits.map((benefit) => {
+                            const Icon = benefit.icon;
+
+                            return (
+                                <article className="landing-benefit" key={benefit.title}>
+                                    <span className="landing-benefit-icon">
+                                        <Icon size={20} />
+                                    </span>
+                                    <h3>{benefit.title}</h3>
+                                    <p>{benefit.description}</p>
+                                </article>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            <section className="landing-section">
+                <div className="landing-container">
+                    <div className="landing-cta-inner">
                         <div>
-                            <div className="stars">★★★★★</div>
-                            <span>Trusted by skill swappers</span>
+                            <h2>Ready to turn what you know into what you want to learn?</h2>
+                            <p>
+                                Create a profile, add your first skill, and start
+                                discovering people with something to exchange.
+                            </p>
                         </div>
-                    </div>
-                </div>
-
-                <div className="hero-visual">
-                    <div className="profile-card card-one">
-                        <div className="profile-avatar">👩</div>
-                        <div>
-                            <strong>Sarah</strong>
-                            <small>San Francisco</small>
-                        </div>
-                        <span className="skill-tag">Guitar</span>
-                    </div>
-
-                    <div className="profile-card card-two">
-                        <div className="profile-avatar">👨</div>
-                        <div>
-                            <strong>Alex</strong>
-                            <small>New York</small>
-                        </div>
-                        <span className="skill-tag">French</span>
-                    </div>
-
-                    <div className="request-card">
-                        <div className="check">✓</div>
-                        <div>
-                            <strong>Swap Request Accepted!</strong>
-                            <small>Conversation created</small>
+                        <div className="landing-cta-actions">
+                            <Link to="/register" className="btn btn-primary">
+                                Get started
+                                <ArrowRight size={16} />
+                            </Link>
+                            <Link to="/login" className="btn btn-secondary">
+                                Sign in
+                            </Link>
                         </div>
                     </div>
                 </div>
             </section>
-
-            <section className="stats">
-                <div>
-                    <strong>12,400+</strong>
-                    <span>Active members</span>
-                </div>
-                <div>
-                    <strong>48</strong>
-                    <span>Skill categories</span>
-                </div>
-                <div>
-                    <strong>89K+</strong>
-                    <span>Sessions completed</span>
-                </div>
-                <div>
-                    <strong>4.8★</strong>
-                    <span>Avg. rating</span>
-                </div>
-            </section>
-
-            <section className="skills">
-                <span>React Development</span>
-                <span>Photography</span>
-                <span>Guitar</span>
-                <span>French</span>
-                <span>Yoga</span>
-                <span>Machine Learning</span>
-                <span>UI/UX Design</span>
-                <span>Spanish</span>
-                <span>Piano</span>
-            </section>
-
-            <section className="features" id="features">
-                <p className="section-label">WHY SKILLSWAP</p>
-                <h2>Built for real skill exchange</h2>
-                <p className="section-description">
-                    Everything you need to connect, learn, and grow
-                    with people who share your curiosity.
-                </p>
-
-                <div className="feature-grid">
-                    <div className="feature-card">
-                        <div className="feature-icon">↔</div>
-                        <h3>Pure Skill Exchange</h3>
-                        <p>
-                            No money, no algorithms. Just two people
-                            agreeing to teach each other something they love.
-                        </p>
-                    </div>
-
-                    <div className="feature-card">
-                        <div className="feature-icon">✓</div>
-                        <h3>Verified Community</h3>
-                        <p>
-                            Every member is reviewed by real peers.
-                            Browse profiles with ratings and reviews.
-                        </p>
-                    </div>
-
-                    <div className="feature-card">
-                        <div className="feature-icon">◉</div>
-                        <h3>Online & In-Person</h3>
-                        <p>
-                            Schedule sessions online or meet locally
-                            depending on what works for you.
-                        </p>
-                    </div>
-
-                    <div className="feature-card">
-                        <div className="feature-icon">□</div>
-                        <h3>Structured Sessions</h3>
-                        <p>
-                            Propose sessions, confirm times and
-                            keep everything organized.
-                        </p>
-                    </div>
-
-                    <div className="feature-card">
-                        <div className="feature-icon">▢</div>
-                        <h3>Built-in Messaging</h3>
-                        <p>
-                            Communicate directly with your swap partners
-                            once a request is accepted.
-                        </p>
-                    </div>
-
-                    <div className="feature-card">
-                        <div className="feature-icon">☆</div>
-                        <h3>Honest Reviews</h3>
-                        <p>
-                            After each completed session, both partners
-                            can leave a review.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section className="how-it-works" id="how-it-works">
-                <p className="section-label">HOW IT WORKS</p>
-                <h2>From hello to skill swap</h2>
-                <p className="section-description">
-                    Four simple steps stand between you and your first
-                    skill exchange.
-                </p>
-
-                <div className="steps">
-                    <div className="step">
-                        <div className="step-number">01</div>
-                        <h3>Build your profile</h3>
-                        <p>
-                            Add the skills you can teach and the ones
-                            you want to learn.
-                        </p>
-                    </div>
-
-                    <div className="step">
-                        <div className="step-number">02</div>
-                        <h3>Discover & match</h3>
-                        <p>
-                            Browse users offering what you want and
-                            discover your best matches.
-                        </p>
-                    </div>
-
-                    <div className="step">
-                        <div className="step-number">03</div>
-                        <h3>Send a swap request</h3>
-                        <p>
-                            Propose a skill exchange and wait for
-                            your partner to accept.
-                        </p>
-                    </div>
-
-                    <div className="step">
-                        <div className="step-number">04</div>
-                        <h3>Learn together</h3>
-                        <p>
-                            Chat, schedule sessions and learn together.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section className="stories" id="stories">
-                <p className="section-label">SUCCESS STORIES</p>
-                <h2>Real people, real swaps</h2>
-
-                <div className="story-grid">
-                    <div className="story-card">
-                        <div className="stars">★★★★★</div>
-                        <p>
-                            "I traded Python for Spanish lessons.
-                            SkillSwap completely changed how I learn."
-                        </p>
-                        <strong>Priya Nair</strong>
-                        <small>Python ↔ Spanish</small>
-                    </div>
-
-                    <div className="story-card">
-                        <div className="stars">★★★★★</div>
-                        <p>
-                            "I found someone who wanted to learn
-                            web development and teach French."
-                        </p>
-                        <strong>Tomás Reyes</strong>
-                        <small>Web Development ↔ French</small>
-                    </div>
-
-                    <div className="story-card">
-                        <div className="stars">★★★★★</div>
-                        <p>
-                            "The community is genuine, warm and
-                            full of people ready to share."
-                        </p>
-                        <strong>Yuki Tanaka</strong>
-                        <small>UI/UX Design ↔ Guitar</small>
-                    </div>
-                </div>
-            </section>
-
-            <section className="cta">
-                <h2>Ready for your first swap?</h2>
-                <p>
-                    Join curious people who are already teaching
-                    and learning something new every week.
-                </p>
-                <a href="/register" className="cta-btn">Get Started</a>
-            </section>
-
-            <footer className="footer">
-                <div>
-                    <div className="logo">
-                        <span className="logo-icon">↔</span>
-                        SkillSwap
-                    </div>
-                    <p>
-                        Exchange knowledge, build community,
-                        and grow together.
-                    </p>
-                </div>
-
-                <div className="footer-links">
-                    <div>
-                        <h4>PLATFORM</h4>
-                        <a href="#how-it-works">How it works</a>
-                        <a href="#features">Features</a>
-                        <a href="#stories">Success Stories</a>
-                    </div>
-
-                    <div>
-                        <h4>COMPANY</h4>
-                        <a href="#">About</a>
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
-                        <a href="#">Contact</a>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 }
-
-export default Home;
