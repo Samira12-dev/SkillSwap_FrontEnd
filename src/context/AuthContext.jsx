@@ -1,8 +1,22 @@
-import { createContext, useEffect, useState, useRef } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { getUserById } from "../services/userService";
 
 export const AuthContext = createContext();
+
+const getUserFromToken = (decodedToken) => ({
+    id: decodedToken.id,
+    firstName: decodedToken.firstName,
+    lastName: decodedToken.lastName,
+    email: decodedToken.email,
+    city: decodedToken.city,
+    photo: decodedToken.photo,
+    bio: decodedToken.bio,
+    rating: decodedToken.rating,
+    createdAt: decodedToken.createdAt,
+    role: decodedToken.role
+});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
@@ -23,46 +37,34 @@ export const AuthProvider = ({ children }) => {
                 return null;
             }
 
-            return {
-                id: decodedToken.id,
-                firstName: decodedToken.firstName,
-                lastName: decodedToken.lastName,
-                email: decodedToken.email,
-                city: decodedToken.city,
-                photo: decodedToken.photo,
-                bio: decodedToken.bio,
-                rating: decodedToken.rating,
-                createdAt: decodedToken.createdAt,
-                role: decodedToken.role
-            };
-        } catch (error) {
+            return getUserFromToken(decodedToken);
+        } catch {
             localStorage.removeItem("token");
             return null;
         }
     });
 
-    const [loading, setLoading] = useState(false);
     const [unreadMessages, setUnreadMessages] = useState(0);
 
     const navigate = useNavigate();
     const logoutTimerRef = useRef(null);
 
-    const clearLogoutTimer = () => {
+    const clearLogoutTimer = useCallback(() => {
         if (logoutTimerRef.current) {
             clearTimeout(logoutTimerRef.current);
             logoutTimerRef.current = null;
         }
-    };
+    }, []);
 
-    const logout = () => {
+    const logout = useCallback(() => {
         clearLogoutTimer();
         localStorage.removeItem("token");
         setUser(null);
         setUnreadMessages(0);
         navigate("/login");
-    };
+    }, [clearLogoutTimer, navigate]);
 
-    const updateUserFromToken = (token) => {
+    const updateUserFromToken = useCallback((token) => {
         try {
             const decodedToken = jwtDecode(token);
 
@@ -71,21 +73,10 @@ export const AuthProvider = ({ children }) => {
                 decodedToken.exp * 1000 <= Date.now()
             ) {
                 logout();
-                return;
+                return null;
             }
 
-            setUser({
-                id: decodedToken.id,
-                firstName: decodedToken.firstName,
-                lastName: decodedToken.lastName,
-                email: decodedToken.email,
-                city: decodedToken.city,
-                photo: decodedToken.photo,
-                bio: decodedToken.bio,
-                rating: decodedToken.rating,
-                createdAt: decodedToken.createdAt,
-                role: decodedToken.role
-            });
+            setUser(getUserFromToken(decodedToken));
 
             if (decodedToken.exp) {
                 const expiresInMs =
@@ -97,21 +88,40 @@ export const AuthProvider = ({ children }) => {
                     logout();
                 }, expiresInMs);
             }
-        } catch (error) {
+
+            return decodedToken;
+        } catch {
             localStorage.removeItem("token");
             setUser(null);
+            return null;
         }
-    };
+    }, [clearLogoutTimer, logout]);
+
+    const refreshUser = useCallback(async (userId) => {
+        if (!userId) return null;
+
+        const profile = await getUserById(userId);
+
+        setUser((previous) =>
+            previous ? { ...previous, ...profile } : previous
+        );
+
+        return profile;
+    }, []);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
 
         if (token) {
-            updateUserFromToken(token);
+            const decodedToken = updateUserFromToken(token);
+
+            if (decodedToken?.id) {
+                refreshUser(decodedToken.id).catch(() => {});
+            }
         }
 
         return () => clearLogoutTimer();
-    }, []);
+    }, [clearLogoutTimer, refreshUser, updateUserFromToken]);
 
     const login = (token) => {
         localStorage.setItem("token", token);
@@ -129,7 +139,7 @@ export const AuthProvider = ({ children }) => {
                 login,
                 logout,
                 updateUser,
-                loading,
+                refreshUser,
                 unreadMessages,
                 setUnreadMessages
             }}

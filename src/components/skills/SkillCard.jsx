@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Avatar from "../ui/Avatar";
 
 function SkillCard({ user, onRequestSwap }) {
     return (
@@ -9,9 +10,13 @@ function SkillCard({ user, onRequestSwap }) {
                     className="skill-card-profile-link"
                     to={`/profile/${user.userId}`}
                 >
-                    <div className="skill-avatar">
-                        {user.userName?.charAt(0)}
-                    </div>
+                    <Avatar
+                        user={{
+                            firstName: user.userName,
+                            photo: user.photo
+                        }}
+                        size="md"
+                    />
 
                     <div>
                         <h3>{user.userName}</h3>

@@ -115,6 +115,7 @@ function DiscoverSkills() {
             groupedSkills.push({
                 userId: skill.userId,
                 userName: skill.userName,
+                photo: skill.photo,
                 skills: [skill]
             });
         }

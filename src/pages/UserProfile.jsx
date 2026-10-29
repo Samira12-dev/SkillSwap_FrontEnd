@@ -12,6 +12,7 @@ import { getUserById } from "../services/userService";
 import { getUserProfileSkills } from "../services/skillService";
 import { getReviewsByUser, getAverageRating } from "../services/reviewService";
 import ReviewList from "../components/reviews/ReviewList";
+import Avatar from "../components/ui/Avatar";
 import "../App.css";
 
 function UserProfile() {
@@ -80,14 +81,7 @@ function UserProfile() {
             <div className="user-profile-card">
                 <div className="user-profile-header">
                     <div className="user-profile-avatar">
-                        {user.photo ? (
-                            <img
-                                src={user.photo}
-                                alt={`${user.firstName} ${user.lastName}`}
-                            />
-                        ) : (
-                            user.firstName?.charAt(0)
-                        )}
+                        <Avatar user={user} size="xl" />
                     </div>
 
                     <div className="user-profile-info">

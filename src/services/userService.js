@@ -10,6 +10,14 @@ export const updateProfile = async (userId, data) => {
     return response.data;
 };
 
+export const uploadProfilePhoto = async (userId, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api.post(`/users/${userId}/photo`, formData);
+    return response.data;
+};
+
 export const getAllUsers = (page, size) => {
 return api.get("/users", {
     params: { page, size }

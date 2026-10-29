@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { getDisplayName, getInitials } from "../../utils/format";
+import { getDisplayName, getInitials, getInitialsFromName } from "../../utils/format";
+import { resolveMediaUrl } from "../../utils/media";
 
 export default function Avatar({ user, name, size = "md", className = "" }) {
     const [imageFailed, setImageFailed] = useState(false);
     const displayName = name || getDisplayName(user);
-    const initials = getInitials(user?.firstName, user?.lastName);
+    const initials = user?.firstName
+        ? getInitials(user.firstName, user.lastName)
+        : getInitialsFromName(displayName);
+    const photo = resolveMediaUrl(user?.photo);
     const classes = `ui-avatar ui-avatar--${size} ${className}`.trim();
 
-    if (user?.photo && !imageFailed) {
+    if (photo && !imageFailed) {
         return (
             <img
-                src={user.photo}
+                src={photo}
                 alt={`${displayName}'s profile`}
                 className={`${classes} ui-avatar--image`}
                 onError={() => setImageFailed(true)}

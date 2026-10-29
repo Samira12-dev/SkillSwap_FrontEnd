@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { MdEdit, MdLocationOn, MdCalendarToday, MdStar } from "react-icons/md";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import Avatar from "../components/ui/Avatar";
 import "../App.css";
 
 function MyProfile() {
@@ -25,10 +26,7 @@ function MyProfile() {
                 <div className="left-col">
                     <div className="card user-summary-card">
                         <div className="profile-img-box">
-                            <img
-                                src={user?.photo || "https://i.pravatar.cc/120?img=12"}
-                                alt="Profile"
-                            />
+                            <Avatar user={user} size="xl" />
                         </div>
 
                         <h3>
